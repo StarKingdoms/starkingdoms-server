@@ -1,0 +1,205 @@
+var socket = io()
+
+var canvas = document.getElementById('canvas')
+var ctx = canvas.getContext('2d')
+
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+
+window.onresize = function(){
+	canvas.width = window.innerWidth
+	canvas.height = window.innerHeight
+}
+
+function makeid(length) {
+   var result           = '';
+   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+   var charactersLength = characters.length;
+   for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+   }
+   return result;
+}
+
+var username = prompt('Username:')
+var id = makeid(4)
+var keys = {}
+var players = {}
+var player = {x: 0, y: 0, rotation: 0, speedY: 0, speedX: 0, maxF: 10, maxB: 5, maxLR: 3, thrust: false}
+var dev = false
+if(username.includes('[DEV]')){
+	var devkey = prompt('You are attempting to join as a dev. Please enter the dev key:')
+}
+
+socket.emit('test-dev', {key: devkey, id: id})
+socket.on('test-dev-result', function(msg){
+	if(msg.id == id){
+		if(msg.dev){
+			console.log('Joined as dev.')
+			alert('Succesfully joined as dev.')
+			dev = true
+		}
+	}
+	else{
+		username = username.replace('[DEV]', '')
+	}
+})
+
+var imgs = {}
+
+function prepareImages(){
+	var img = new Image
+	img.src = `https://warpio.epicraisin.repl.co/img/rk-1.png`
+	img.onload = function(){
+		imgs['rk-1'] = img
+	}
+	var img1 = new Image
+	img1.src = `https://warpio.epicraisin.repl.co/img/rk-1-t.png`
+	img1.onload = function(){
+		imgs['rk-1-t'] = img1
+	}
+}
+
+console.log(imgs)
+
+function clamp(value, min, max){
+  if(value < min) return min;
+  else if(value > max) return max;
+  return value;
+}
+
+prepareImages()
+
+socket.emit('server-chat', {sender: username, id: id, msg: 'has joined the game'})
+
+socket.on('client-chat', function(msg){
+	document.getElementById('chat').innerHTML += '<b>' + msg.sender + '</b><id>#' + msg.id + '</id>: ' + msg.msg + '<br>'
+	document.getElementById('chat').scrollTo(0, document.getElementById('chat').scrollHeight)
+})
+
+socket.on('client-remove', function(usernam){
+	delete players[usernam]
+})
+
+socket.on('client-pos', function(msg){
+	if(!players[msg.id]){
+		players[msg.id] = {}
+	}
+	players[msg.id].username = msg.username
+	players[msg.id].x = msg.x
+	players[msg.id].y = msg.y
+	players[msg.id].thrust = msg.thrust
+	players[msg.id].updated = true
+})
+
+function chatMsg(msg){
+	socket.emit('server-chat', {sender: username, id: id, msg: msg})
+}
+
+window.onbeforeunload = function(){
+	socket.emit('server-remove', username)
+}
+
+async function draw(){
+	requestAnimationFrame(draw)
+
+	canvas.style.backgroundPosition = `${-player.x / 2}px ${-player.y / 2}px`
+
+	ctx.setTransform(1,0,0,1,0,0);
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  var camX = -player.x + canvas.width/2
+  var camY = -player.y + canvas.height/2
+
+  ctx.translate( camX, camY );
+
+	document.getElementById('player-list').innerHTML = ''
+	for(p in players){
+		if(p == id){
+			document.getElementById('player-list').innerHTML += players[p].username + '<id>#' + p + '</id> -- you <br>'
+			if(player.thrust){
+				console.log('thruster ON')
+				ctx.drawImage(imgs['rk-1-t'], player.x - imgs['rk-1-t'].width / 2, player.y - imgs['rk-1'].height / 2)
+			}
+			else{
+				console.log('thruster OFF')
+				ctx.drawImage(imgs['rk-1'], player.x - imgs['rk-1'].width / 2, player.y - imgs['rk-1'].height / 2)
+			}
+			ctx.textBaseline = 'bottom'
+			ctx.textAlign = 'center'
+			ctx.fillStyle = 'white'
+			ctx.font = '20pt sans-serif'
+			ctx.fillText(players[p].username, player.x, player.y - imgs['rk-1'].height / 2)
+			continue
+		}
+		document.getElementById('player-list').innerHTML += players[p].username + '<id>#' + p + '<br>'
+		if(players[p].thrust){
+			ctx.drawImage(imgs['rk-1-t'], players[p].x - imgs['rk-1-t'].width / 2, players[p].y - imgs['rk-1'].height / 2)
+		}
+		else{
+			ctx.drawImage(imgs['rk-1'], players[p].x - imgs['rk-1'].width / 2, players[p].y - imgs['rk-1'].height / 2)
+		}
+		ctx.textBaseline = 'bottom'
+		ctx.textAlign = 'center'
+		ctx.fillStyle = 'white'
+		ctx.font = '20pt sans-serif'
+		ctx.fillText(players[p].username, players[p].x, players[p].y - imgs['rk-1'].height / 2)
+	}
+
+	if(keys.w){
+		player.speedY += 0.1
+		player.speedY = clamp(player.speedY, -player.maxF, player.maxF)
+		player.thrust = true
+	}
+	if(!keys.s && !keys.w && player.speedY > 0){
+		player.speedY -= 0.05
+		player.speedY = clamp(player.speedY, 0, player.maxB)
+	}
+	if(keys.s){
+		player.speedY -= 0.1
+		player.speedY = clamp(player.speedY, -player.maxB, player.maxB)
+		player.thrust = true
+	}
+	if(!keys.s && !keys.w && player.speedY < 0){
+		player.speedY += 0.05
+		player.speedY = clamp(player.speedY, -player.maxB, 0)
+	}
+	player.y -= player.speedY
+	
+	if(keys.a){
+		player.speedX += 0.1
+		player.speedX = clamp(player.speedX, -player.maxLR, player.maxLR)
+		player.thrust = true
+	}
+	if(!keys.d && !keys.a && player.speedX > 0){
+		player.speedX -= 0.05
+		player.speedX = clamp(player.speedX, 0, player.maxLR)
+	}
+	if(keys.d){
+		player.speedX -= 0.1
+		player.speedX = clamp(player.speedX, -player.maxLR, player.maxLR)
+		player.thrust = true
+	}
+	if(!keys.d && !keys.a && player.speedX < 0){
+		player.speedX += 0.05
+		player.speedX = clamp(player.speedX, -player.maxLR, 0)
+	}
+	player.x -= player.speedX
+
+	if(!keys.d && !keys.a && !keys.w && !keys.s){
+		player.thrust = false
+	}
+
+	socket.emit('server-pos', {username: username, x: player.x, y: player.y, id: id, thrust: player.thrust})
+}
+requestAnimationFrame(draw)
+
+document.onkeydown = function(e){
+	if(document.activeElement != document.getElementById('msg')){
+		keys[e.key] = true
+	}
+}
+document.onkeyup = function(e){
+	keys[e.key] = false
+}

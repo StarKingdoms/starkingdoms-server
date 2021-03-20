@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Colonize.io</title>
+  <link rel="stylesheet" href="style.css"></link>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div id="chatbox">
+    <div id="chat">
+    </div>
+    <input id="msg" type="text" onchange="chatMsg(this.value); this.value = '';"></input>
+  </div>
+  <canvas id="canvas"></canvas>
+  <script src="client.js"></script>
+</body>
+</html>

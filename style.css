@@ -1,0 +1,28 @@
+#chatbox {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  height: 400px;
+  width: 256px;
+  background-color: rgba(131, 223, 78, 0.747);
+  padding: 5px;
+}
+#chat {
+  overflow-y: scroll;
+  height: 335px;
+  word-wrap: break-word;
+}
+#msg {
+  position: absolute;
+  color: black;
+  bottom: 6px;
+  left: 6px;
+  width: 246px;
+  border: 2px solid greenyellow;
+  z-index: 1;
+}
+#canvas {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
