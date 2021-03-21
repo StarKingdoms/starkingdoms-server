@@ -1,71 +1,116 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 window.onresize = function() {
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 }
 
-var socket = io()
-
 var username = prompt('Username:')
+if(username == undefined || username == "" || username == " ") {
+	username = "Unnamed"
+}
+var socket = io()
+socket.emit("join", username)
 
 var players = {};
 var player = {
   x: 0,
   y: 0,
-  rotation: 0
+  rotation: 90,
+	velX: 0,
+	velY: 0
 };
 var keys = {};
+var usernames = {};
+var planets = {};
 const SCALE = 30;
 
 function chatMsg(value) {
   socket.emit("message", value, username);
+	
 }
 
-socket.on("client-pos", function(msg, thisPlayer){
+socket.on("client-pos", function(msg, thisPlayer, usernamesInfo){
   players = msg;
   player.x = thisPlayer.x;
   player.y = thisPlayer.y;
   player.rotation = thisPlayer.rotation;
+	player.username = thisPlayer.username;
+	player.velX = thisPlayer.velX;
+	player.velY = thisPlayer.velY;
+	usernames = usernamesInfo;
 });
+
+socket.on("planet-pos", (planetInfo) => {
+	planets = planetInfo;
+})
 
 let chat = document.getElementById("chat");
 socket.on("message", (text, username) => {
-  chat.innerHTML += username + ": " + text + '<br>';
+  chat.innerHTML += username + ": " + text + '<p>';
+	chat.scrollTop = chat.scrollHeight;
 });
 
+var earth = new Image;
+earth.src = "earth.png"
+
+var moon = new Image;
+moon.src = "moon.png"
+
+var hearty = new Image;
+hearty.src = "heartyBase.png"
+
 function draw() {
-  requestAnimationFrame(draw);
+  let intervalId = setInterval(() => {
 
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+	var position = document.getElementById("position");
+	position.innerHTML = "Position: " + Math.round(player.x / 50) + ", " + Math.round(player.y / 50);
+	var velocity = document.getElementById("velocity");
+	velocity.innerHTML = "Vel: " + Math.round(Math.sqrt(player.velX * player.velX + player.velY * player.velY))
 
-  ctx.fillStyle = '#FFF';
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  var camX = -player.x + canvas.width/2;
-  var camY = -player.y + canvas.height/2;
+  canvas.style.backgroundPosition = `${-player.x / 10}px ${-player.y / 10}px`
 
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-  ctx.translate(camX, camY);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = '#000';
-  ctx.beginPath();
-  ctx.arc(0, 0, 100, 0, 2 * Math.PI);
-  ctx.fill();
+	var camX = -player.x + canvas.width / 2
+	var camY = -player.y + canvas.height / 2
+	ctx.translate(camX, camY);
 
-  for(var key of Object.keys(players)) {
-    ctx.save()
-    ctx.translate(players[key].x, players[key].y)
-    ctx.rotate(players[key].rotation)
-    ctx.fillRect(-10, -10, 20, 20);
-    ctx.restore()
-  }
-  socket.emit('input', keys)
+	ctx.drawImage(earth, -1250 + planets.earth.x, -1250 + planets.earth.y, 2500, 2500) // you dont need that
+
+  ctx.drawImage(moon, -200 + planets.moon.x, -200 + planets.moon.y, 400, 400); // dont fucking touch
+
+	ctx.beginPath();
+	ctx.strokeStyle = "limegreen";
+	ctx.lineWidth = 5;
+	ctx.moveTo(player.x, player.y);
+	ctx.lineTo(planets.moon.x, planets.moon.y)
+	ctx.stroke();
+
+	for(var key of Object.keys(players)) {
+		ctx.save();
+		ctx.translate(players[key].x, players[key].y);
+
+		ctx.textAlign = "center";
+    ctx.font = '30px Segoe UI';
+    ctx.fillStyle = "white";
+		ctx.fillText(usernames[key], 0, -35)
+
+		ctx.rotate(players[key].rotation);
+		ctx.drawImage(hearty, -25, -25, 50, 50);
+		ctx.restore();
+	}
+
+	socket.emit("input", keys)
+	}, 1000/60);
 }
-requestAnimationFrame(draw);
+draw();
 
 document.onkeydown = (e) => {
   if(document.activeElement != document.getElementById('msg')) {

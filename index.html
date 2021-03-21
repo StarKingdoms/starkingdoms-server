@@ -4,6 +4,7 @@
   <title>Colonize.io</title>
   <link rel="stylesheet" href="style.css"></link>
   <script src="/socket.io/socket.io.js"></script>
+	<!--<script src="shit/pixi.min.js"></script>-->∧∨
 </head>
 <body>
   <div id="chatbox">
@@ -11,6 +12,18 @@
     </div>
     <input id="msg" type="text" onchange="chatMsg(this.value); this.value = '';"></input>
   </div>
+	<div id="statusbar">
+		<span id="position">
+		</span>
+		<span id="velocity">
+		</span>
+	</div>
+  <!--<div id="ctrlsbox">
+    <button id="btnfrwd" onmousedown="wkey()">△</button>
+    <button id="btnbkwd" onmousedown="skey()">▽</button>
+    <button id="btnleft" onmousedown="akey()">◁</button>
+    <button id="btnrght" onmousedown="dkey()">▷</button>
+  </div>-->
   <canvas id="canvas"></canvas>
   <script src="client.js"></script>
 </body>
