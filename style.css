@@ -2,7 +2,7 @@
   position: absolute;
   left: 0px;
   top: 0px;
-  background-image: url("https://web.archive.org/web/20180311140003im_/http://glap.io/bg.png");
+  background-image: url("assets/starfield.png");
   z-index: 0;
 }
 #chatbox {
@@ -53,6 +53,7 @@
 }
 #position {
 	position: relative;
+  align-content: center;
   color: white;
   padding: 5px;
 	z-index: 2;

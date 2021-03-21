@@ -15,6 +15,7 @@ let io = socketio(server);
 let players = {};
 let playerVitals = {};
 let usernames = {};
+let modules = [];
 
 tick();
 
@@ -32,7 +33,7 @@ let earthBody = world.createBody({
 let earthCircle = planck.Circle(1250 / SCALE);
 let earthFixture = {
 	shape: earthCircle,
-	density: 150
+	density: 200
 }
 
 let moonBody = world.createBody({
@@ -55,7 +56,7 @@ function wkey(socket) {
 }
 
 function skey(socket) {
-  var f = players[socket.id].getWorldVector(planck.Vec2(0.0, 0.05));
+  var f = players[socket.id].getWorldVector(planck.Vec2(0.0, 0.1));
   var p = players[socket.id].getWorldPoint(planck.Vec2(0.0, -0.1));
   players[socket.id].applyLinearImpulse(f, p, true);
 }
@@ -113,13 +114,16 @@ io.on('connection', (socket) => {
 
 	socket.on('join', (username) => {
 		usernames[socket.id] = username;
+		io.emit('message', username + " joined the game", "Server")
 	})
 
 	socket.on('disconnect', () => {
 		console.log('Someone disconnected');
+		io.emit('message', usernames[socket.id] + " left the game", "Server");
 		world.destroyBody(players[socket.id])
 		delete players[socket.id]
 		delete playerVitals[socket.id]
+		delete usernames[socket.id]
 	});
 	socket.on('message', (text, username) => {
 		io.emit('message', text, username);
@@ -143,6 +147,7 @@ io.on('connection', (socket) => {
 })
 
 var planets = {};
+var moduleVitals = [];
 
 function tick() {
 	const intervalId = setInterval(() => {
@@ -156,6 +161,13 @@ function tick() {
 				velX: players[key].getLinearVelocity().x,
 				velY: players[key].getLinearVelocity().y
 			}
+		}
+		for(let i = 0;  i < modules.length; i++) {
+			moduleVitals.push({
+				x: modules[i].getPosition().x * SCALE,
+				y: modules[i].getPosition().y * SCALE,
+				rotation: modules[i].getAngle()
+			});
 		}
 		planets = {
 			earth: {
@@ -172,7 +184,7 @@ function tick() {
 			var distance = Math.sqrt(((playerVitals[key].x - earthBody.getPosition().x * SCALE) * (playerVitals[key].x - earthBody.getPosition().x * SCALE)) + ((playerVitals[key].y - earthBody.getPosition().y * SCALE) * (playerVitals[key].y - earthBody.getPosition().y * SCALE)))
       var distance2 = Math.sqrt(((playerVitals[key].x - moonBody.getPosition().x * SCALE) * (playerVitals[key].x - moonBody.getPosition().x * SCALE)) + ((playerVitals[key].y - moonBody.getPosition().y * SCALE) * (playerVitals[key].y - moonBody.getPosition().y * SCALE)))
 			var G = 1;
-      var G2 = 0.3
+      var G2 = 0.2
 			var strength = G * (earthBody.getMass() * players[key].getMass()) / (distance * distance);
       var strength2 = G * (moonBody.getMass() * players[key].getMass()) / (distance2 * distance2);
 			var force = {
@@ -198,8 +210,43 @@ function tick() {
 			players[key].applyForceToCenter(planck.Vec2(force.x + force2.x, force.y + force2.y), false);
 			io.to(key).emit('client-pos', playerVitals, playerVitals[key], usernames);
 			io.to(key).emit('planet-pos', planets);
+			io.to(key).emit('module-pos', moduleVitals);
 		}
 	}, 1000 / 60)
+	var intervalId2 = setInterval(() => {
+		if(modules.length < 30) {
+			var location = {
+				x: Math.random() * 2 - 1,
+				y: Math.random() * 2 - 1
+			}
+			var magnitude = Math.sqrt(location.x * location.x + location.y * location.y);
+			location.x /= magnitude;
+			location.y /= magnitude;
+
+			location.x *= 1500;
+			location.y *= 1500;
+
+			location.x /= 30;
+			location.y /= 30;
+
+			var moduleBody = world.createBody({
+				type: "dynamic",
+				position: planck.Vec2(location.x, location.y)
+			});
+			var moduleBox = planck.Box(15, 15);
+			var moduleFixture = {
+				shape: moduleBox,
+				density: 1,
+				friction: 0.8,
+				restitution: 0.3,
+				angularVelocity: 0.1
+			}
+			moduleBody.createFixture(moduleFixture)
+
+			modules.push(moduleBody);
+		}
+
+	}, 2000)
 }
 
 server.on('error', (err) => {
