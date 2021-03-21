@@ -9,7 +9,13 @@ window.onresize = function() {
   canvas.height = window.innerHeight
 }
 
-var username = prompt('Username:')
+var username = document.getElementById("nameentry").value;
+
+var el = document.getElementById("usernameentry");
+
+if(username != undefined || username != "" || username != " ")
+el.destroy();
+
 if(username == undefined || username == "" || username == " ") {
 	username = "Unnamed"
 }
@@ -27,7 +33,7 @@ var player = {
 var keys = {};
 var usernames = {};
 var planets = {};
-var modules = [];
+//var modules = [];
 const SCALE = 30;
 
 function chatMsg(value) {
@@ -50,9 +56,9 @@ socket.on("planet-pos", (planetInfo) => {
 	planets = planetInfo;
 })
 
-socket.on("module-pos", (moduleInfo) => {
+/*socket.on("module-pos", (moduleInfo) => {
 	modules = moduleInfo;
-});
+});*/
 
 let chat = document.getElementById("chat");
 socket.on("message", (text, username) => {
@@ -114,13 +120,13 @@ function draw() {
 		ctx.drawImage(hearty, -25, -25, 50, 50);
 		ctx.restore();
 	}
-	for(let i = 0; i < modules.length; i++) {
+	/*for(let i = 0; i < modules.length; i++) {
 		ctx.save();
 		ctx.translate(modules[i].x, modules[i].y)
 		ctx.rotate(modules[i].rotation)
 		ctx.drawImage(cargo, -25, -25, 50, 50)
 		ctx.restore();
-	}
+  }*/
 
 	socket.emit("input", keys)
 	}, 1000/60);

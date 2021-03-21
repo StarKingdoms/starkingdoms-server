@@ -4,7 +4,7 @@
   <title>Colonize.io</title>
   <link rel="stylesheet" href="style.css"></link>
   <script src="/socket.io/socket.io.js"></script>
-	<!--<script src="shit/pixi.min.js"></script>-->∧∨
+	<!--<script src="shit/pixi.min.js"></script>-->
 </head>
 <body>
   <div id="chatbox">
@@ -24,6 +24,14 @@
     <button id="btnleft" onmousedown="akey()">◁</button>
     <button id="btnrght" onmousedown="dkey()">▷</button>
   </div>-->
+  <div id='usernameentry'>
+    <image id="logo" src="assets/logo.png">
+    <form action="/client.js">
+      <label for="uname" id="nameentrylabel">Display name:</label><br>
+      <input type="text" id="nameentry" name="username" value="Unnamed"><br>
+      <input type="submit" id="namesubmit" value="Play">
+    </form>
+  </div>
   <canvas id="canvas"></canvas>
   <script src="client.js"></script>
 </body>

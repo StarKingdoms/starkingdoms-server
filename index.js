@@ -15,7 +15,7 @@ let io = socketio(server);
 let players = {};
 let playerVitals = {};
 let usernames = {};
-let modules = [];
+//let modules = [];
 
 tick();
 
@@ -147,7 +147,7 @@ io.on('connection', (socket) => {
 })
 
 var planets = {};
-var moduleVitals = [];
+//var moduleVitals = [];
 
 function tick() {
 	const intervalId = setInterval(() => {
@@ -162,13 +162,13 @@ function tick() {
 				velY: players[key].getLinearVelocity().y
 			}
 		}
-		for(let i = 0;  i < modules.length; i++) {
+		/*for(let i = 0;  i < modules.length; i++) {
 			moduleVitals.push({
 				x: modules[i].getPosition().x * SCALE,
 				y: modules[i].getPosition().y * SCALE,
 				rotation: modules[i].getAngle()
 			});
-		}
+    }*/
 		planets = {
 			earth: {
 				x: earthBody.getPosition().x * SCALE,
@@ -210,11 +210,11 @@ function tick() {
 			players[key].applyForceToCenter(planck.Vec2(force.x + force2.x, force.y + force2.y), false);
 			io.to(key).emit('client-pos', playerVitals, playerVitals[key], usernames);
 			io.to(key).emit('planet-pos', planets);
-			io.to(key).emit('module-pos', moduleVitals);
+			//io.to(key).emit('module-pos', moduleVitals);
 		}
 	}, 1000 / 60)
 	var intervalId2 = setInterval(() => {
-		if(modules.length < 30) {
+		/*if(modules.length < 30) {
 			var location = {
 				x: Math.random() * 2 - 1,
 				y: Math.random() * 2 - 1
@@ -244,7 +244,7 @@ function tick() {
 			moduleBody.createFixture(moduleFixture)
 
 			modules.push(moduleBody);
-		}
+    }*/
 
 	}, 2000)
 }
