@@ -2,37 +2,18 @@
 <html lang="en">
 <head>
   <title>Colonize.io</title>
-  <link rel="stylesheet" href="style.css"></link>
+  <link rel="stylesheet" href="styletitle.css"></link>
   <script src="/socket.io/socket.io.js"></script>
 	<!--<script src="shit/pixi.min.js"></script>-->
 </head>
 <body>
-  <div id="chatbox">
-    <div id="chat">
-    </div>
-    <input id="msg" type="text" onchange="chatMsg(this.value); this.value = '';"></input>
-  </div>
-	<div id="statusbar">
-		<span id="position">
-		</span>
-		<span id="velocity">
-		</span>
-	</div>
-  <!--<div id="ctrlsbox">
-    <button id="btnfrwd" onmousedown="wkey()">△</button>
-    <button id="btnbkwd" onmousedown="skey()">▽</button>
-    <button id="btnleft" onmousedown="akey()">◁</button>
-    <button id="btnrght" onmousedown="dkey()">▷</button>
-  </div>-->
   <div id='usernameentry'>
     <image id="logo" src="assets/logo.png">
-    <form action="/client.js">
+    <form action="/main.html">
       <label for="uname" id="nameentrylabel">Display name:</label><br>
-      <input type="text" id="nameentry" name="username" value="Unnamed"><br>
+      <input type="text" id="nameentry" name="username" value=" "><br>
       <input type="submit" id="namesubmit" value="Play">
     </form>
   </div>
-  <canvas id="canvas"></canvas>
-  <script src="client.js"></script>
 </body>
 </html>

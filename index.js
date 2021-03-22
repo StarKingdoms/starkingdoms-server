@@ -50,23 +50,23 @@ earthBody.createFixture(earthFixture);
 moonBody.createFixture(moonFixture);
 
 function wkey(socket) {
-  var f = players[socket.id].getWorldVector(planck.Vec2(0.0, -0.1));
-  var p = players[socket.id].getWorldPoint(planck.Vec2(0.0, 0.1));
+  var f = players[socket.id].getWorldVector(planck.Vec2(0.0, -0.2));
+  var p = players[socket.id].getWorldPoint(planck.Vec2(0.0, 0.2));
   players[socket.id].applyLinearImpulse(f, p, true);
 }
 
 function skey(socket) {
-  var f = players[socket.id].getWorldVector(planck.Vec2(0.0, 0.1));
-  var p = players[socket.id].getWorldPoint(planck.Vec2(0.0, -0.1));
+  var f = players[socket.id].getWorldVector(planck.Vec2(0.0, 0.2));
+  var p = players[socket.id].getWorldPoint(planck.Vec2(0.0, -0.2));
   players[socket.id].applyLinearImpulse(f, p, true);
 }
 
 function akey(socket) {
-  players[socket.id].applyAngularImpulse(-0.05, true);
+  players[socket.id].applyAngularImpulse(-0.06, true);
 }
 
 function dkey(socket) {
-  players[socket.id].applyAngularImpulse(0.05, true);
+  players[socket.id].applyAngularImpulse(0.06, true);
 }
 
 
@@ -96,7 +96,7 @@ io.on('connection', (socket) => {
 		shape: boxBox,
 		density: 1.0,
 		friction: 0.8,
-		restitution: 0.3,
+		restitution: 0.2,
 		angularDamping: 0.1
 	}
 	boxBody.createFixture(fixtureDef)

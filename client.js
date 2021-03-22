@@ -1,6 +1,19 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext('2d');
 
+function getParameterByName( name ){
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( window.location.href );
+  if( results == null )
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+var username = getParameterByName('username');
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -8,13 +21,6 @@ window.onresize = function() {
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 }
-
-var username = document.getElementById("nameentry").value;
-
-var el = document.getElementById("usernameentry");
-
-if(username != undefined || username != "" || username != " ")
-el.destroy();
 
 if(username == undefined || username == "" || username == " ") {
 	username = "Unnamed"
@@ -96,15 +102,22 @@ function draw() {
 	var camY = -player.y + canvas.height / 2
 	ctx.translate(camX, camY);
 
-	ctx.drawImage(earth, -1250 + planets.earth.x, -1250 + planets.earth.y, 2500, 2500) // you dont need that
+	ctx.drawImage(earth, -1250 + planets.earth.x, -1250 + planets.earth.y, 2500, 2500)
 
   ctx.drawImage(moon, -200 + planets.moon.x, -200 + planets.moon.y, 400, 400); // dont fucking touch
 
 	ctx.beginPath();
-	ctx.strokeStyle = "limegreen";
+	ctx.strokeStyle = "gray";
 	ctx.lineWidth = 5;
 	ctx.moveTo(player.x, player.y);
 	ctx.lineTo(planets.moon.x, planets.moon.y)
+	ctx.stroke();
+
+  ctx.beginPath();
+	ctx.strokeStyle = "limegreen";
+	ctx.lineWidth = 5;
+	ctx.moveTo(player.x, player.y);
+	ctx.lineTo(planets.earth.x, planets.earth.y)
 	ctx.stroke();
 
 	for(var key of Object.keys(players)) {
