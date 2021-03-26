@@ -25,10 +25,13 @@ let world;
 world = planck.World({
 	gravity: planck.Vec2(0, 0)
 });
-
+let earthPos = {
+	x: 0,
+	y: 0
+}
 let earthBody = world.createBody({
 	type: "dynamic",
-	position: planck.Vec2(0 / SCALE, 0 / SCALE)
+	position: planck.Vec2(earthPos.x / SCALE, earthPos.y / SCALE)
 })
 let earthCircle = planck.Circle(1250 / SCALE);
 let earthFixture = {
@@ -36,9 +39,13 @@ let earthFixture = {
 	density: 200
 }
 
+let moonPos = {
+	x: 3500,
+	y: -1600
+}
 let moonBody = world.createBody({
 	type: "dynamic",
-	position: planck.Vec2(3500 / SCALE, -1600 / SCALE)
+	position: planck.Vec2(moonPos.x / SCALE, moonPos.y / SCALE)
 })
 let moonCircle = planck.Circle(200 / SCALE);
 let moonFixture = {
@@ -118,7 +125,7 @@ io.on('connection', (socket) => {
 	console.log(earthBody.getMass())
 	players[socket.id] = body;
 
-  body2.createFixture(fixtureDef);
+  	body2.createFixture(fixtureDef);
 	console.log(body2.getMass())
 	console.log(moonBody.getMass())
 	players[socket.id] = body2;*/
@@ -163,7 +170,9 @@ var moduleVitals = [];
 function tick() {
 	const intervalId = setInterval(() => {
 		world.step(1 / 30, 10, 10);
-		
+		earthBody.setTransform(planck.Vec2(earthPos.x, earthPos.y), 0);
+		moonBody.setTransform(planck.Vec2(moonPos.x, moonPos.y), 0);
+
 		for (let key of Object.keys(players)) {
 			playerVitals[key] = {
 				x: players[key].getPosition().x * SCALE,
