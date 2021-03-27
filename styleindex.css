@@ -154,6 +154,15 @@
   z-index: 2;
 }
 
+#deprecated {
+  position: absolute;
+  padding: 5px;
+  font-family: serif;
+  font-size: 40pt;
+  top: 25px;
+  left: 25px;
+}
+
 
 
 #background {
