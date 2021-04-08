@@ -1,12 +1,18 @@
 const express = require('express');
 const socketio = require('socket.io')
-const http = require('http')
+const https = require('https')
 const planck = require('planck-js')
+const fs = require("fs");
 
 const app = express(); 
 const clientPath = `${__dirname}/`
 
-let server = http.createServer(app);
+const options = {
+	key: fs.readFileSync('key.pem'),
+	cert: fs.readFileSync('cert.pem')
+};
+
+let server = https.createServer(options, app);
 
 app.use(express.static(clientPath));
 
@@ -305,6 +311,6 @@ server.on('error', (err) => {
 	console.error('Server error:', err);
 });
 
-server.listen(80, () => { // the server spawns in like a million modules
-	console.log("Server Started on 80")
+server.listen(8080, () => { // the server spawns in like a million modules
+	console.log("Server Started on 8000")
 })
