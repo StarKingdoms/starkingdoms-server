@@ -161,6 +161,8 @@
   font-size: 40pt;
   top: 25px;
   left: 25px;
+  z-index: 100;
+  color: red;
 }
 
 

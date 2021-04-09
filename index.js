@@ -125,7 +125,7 @@ io.on('connection', (socket) => {
 	console.log(earthBody.getMass())
 	players[socket.id] = body;
 
-  	body2.createFixture(fixtureDef);
+  body2.createFixture(fixtureDef);
 	console.log(body2.getMass())
 	console.log(moonBody.getMass())
 	players[socket.id] = body2;*/

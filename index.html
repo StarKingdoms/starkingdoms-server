@@ -1,42 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta content="StarKingdoms.TK" property="og:title">
-  <meta content="Space exploration game inspired by glap.io" property="og:description">
-  <meta content="http://starkingdoms.tk/" property="og:url">
-  <meta content="http://starkingdoms.tk/assets/hearty.png" property="og:image">
-  <meta content="#48484e" data-react-helmet="true" name="theme-color">
-  
-  <title>StarKingdoms.TK</title>
-  <link rel="stylesheet" href="styleindex.css"></link>
-  <link rel="favicon" href="favicon.ico"></link>
-  <script src="/socket.io/socket.io.js"></script>
-  <script data-ad-client="ca-pub-1645421539223646" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <meta content="StarKingdoms.TK" property="og:title">
+    <meta content="Travel to planets, expand your ship, and collect modules in this small browser game" property="og:description">
+    <meta content="http://starkingdoms.tk/" property="og:url">
+    <meta content="http://starkingdoms.tk/assets/hearty.png" property="og:image">
+    <meta content="#6900c4" data-react-helmet="true" name="theme-color">
+
+    <link rel="stylesheet" href="index.css"></link>
+    <link rel="favicon" href="favicon.ico"></link>
+    <link rel="stylesheet" href="static/fa/css/all.min.css"></link>
 </head>
+
+
 <body>
-  <div id='usernameentry'>
-    <image id="logo" src="assets/logo.png">
-    <form action="/main.html">
-      <label for="uname" id="nameentrylabel">Display name:</label><br>
-      <input type="text" id="nameentry" name="username" value=" "><br>
-      <input type="submit" id="namesubmit" value="Play">
-    </form>
-  </div>
-  <div id="warpio">
-    <div id="warpiolnk">
-      Don't forget<br>to check out<br>
-      <a href="https://warpio.epicraisin.repl.co/">Warp.IO!<br>
-      <image id="warpioicon" src="assets/warpio.png"></image></a>
+
+    <div id="home" class="box">
+        <div id="logo" class="centered boxChild object"></div>
+        <form id="entry" class="object" action="/main.html">
+            <label for="uname" id="unamelbl" class="centered">Username:</label><br>
+            <input type="text" id="uname" class="centered boxChild" name="username" placeholder="Unnamed"><br><br>
+            <input type="submit" id="playbtn" class="centered boxChild" value="Play">
+        </form>
+        <h3 class="centered" id="launch">Launching to space...</h3>
     </div>
-  </div>
-  <div id="discord">
-    <div id="discordlnk">
-      Join our Discord<br>server
-      <a href="https://discord.gg/pQD6FhqmWu">here!<br>
-      <image id="discordicon" src="assets/discord.png"></image></a>a
+
+    <div id="discBox" class="box">
+        <a href="https://api.coresdev.ml/starkingdoms/authorize.php?api_key=13365c19-095b-4350-9973-fa2d01a4e3d4&secret=YsQ$NsR_V8MuB$z"><i class="fab fa-discord" id="discLink"></i>Log in with Discord</a>
     </div>
-  </div>
-  <div id="deprecated">WARNING - DEPRECATED</div>
-  <canvas id="background"></canvas>
+
+    
 </body>
+<!-- <script src="static/login.js"></script>  <!-- after DOM load, this is crucial -->
+<script src="static/fa/js/pro.min.js"></script> <!-- Font Awesome -->
 </html>
