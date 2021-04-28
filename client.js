@@ -25,7 +25,7 @@ window.onresize = function() {
 if(username == undefined || username == "" || username == " ") {
 	username = "Unnamed"
 }
-var socket = io()
+var socket = io("http://localhost:25580")
 socket.emit("join", username)
 
 var players = {};
