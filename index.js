@@ -1,22 +1,17 @@
 const express = require('express');
 const socketio = require('socket.io')
-const https = require('https')
+const app = express();
+const http = require('http').Server(app);
 const planck = require('planck-js')
 const fs = require("fs");
 
-const app = express(); 
-const clientPath = `${__dirname}/`
-
-const options = {
-	key: fs.readFileSync('key.pem'),
-	cert: fs.readFileSync('cert.pem')
-};
-
-let server = https.createServer(options, app);
-
-app.use(express.static(clientPath));
-
-let io = socketio(server);
+let io = socketio(http, {
+	cors: {
+		origin: "http://localhost",
+		methods: ["GET", "POST"]
+	}
+});
+http.listen(25580);
 
 let players = {};
 let playerVitals = {};
@@ -93,7 +88,7 @@ function dkey(socket) {
 }
 
 
-io.on('connection', (socket) => {
+io.sockets.on('connection', (socket) => {
 	console.log('Someone connected');
 
 	/*let body = world.createBody({
@@ -306,11 +301,3 @@ function tick() {
 
 	}, 2000)
 }
-
-server.on('error', (err) => {
-	console.error('Server error:', err);
-});
-
-server.listen(443, () => { // the server spawns in like a million modules
-	console.log("Server Started on 443")
-})
