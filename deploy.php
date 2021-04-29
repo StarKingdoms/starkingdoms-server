@@ -1,5 +1,3 @@
 <?php
-exec("exec $(\"ssh-agent -s\")");
-exec("ssh-add /etc/apache2/id_ed25519");
-exec("git autopull");
+exec("cd /var/www/html/api/ && git pull https://c0repwn3r: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@github.com/GhostlyCoding/starkingdoms.tk.git");
 ?>
