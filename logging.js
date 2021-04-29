@@ -1,5 +1,5 @@
 const colors = require('colors');
-
+// this var sometimes does not set, hardcode it to True if needed
 let debugEnabled = false;
 
 exports.debug = function(message) {
