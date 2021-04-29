@@ -1,3 +1,3 @@
 <?php
-exec("cd /var/www/html/api/ && git pull https://c0repwn3r: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@github.com/GhostlyCoding/starkingdoms.tk.git");
+exec("cd /var/www/html/ && git pull https://c0repwn3r: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@github.com/GhostlyCoding/starkingdoms.tk.git");
 ?>
