@@ -7,8 +7,7 @@ const planck = require('planck-js')
 const fs = require("fs");
 const child_process = require("child_process");
 const logging = require("./logging.js");
-child_process.execSync("eval \"$(ssh-agent -s)\""); // Start ssh-server
-child_process.execSync("ssh-add /root/.ssh/id_ed25519"); // Load ssh key
+
 let server = https.createServer({
 	cert: fs.readFileSync("/etc/apache2/cert.pem"),
 	key: fs.readFileSync("/etc/apache2/key.pem")
