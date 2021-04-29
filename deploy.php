@@ -1,5 +1,7 @@
 <?php
+echo "> repo sync\n";
+echo "[*] Started goal sync.\n";
 require("./sync.php");
-echo "Synced server with repository.";
-echo "Server may take up to 10 seconds to refresh.";
+echo "Synced server with repository.\n";
+echo "[*] Finished goal sync.\n";
 ?>
