@@ -1,7 +1,7 @@
 <?php
-echo "> repo sync\n";
-echo "[*] Started goal sync.\n";
+echo "> repo sync<br>";
+echo "[*] Started goal sync.<br>";
 require("./sync.php");
-echo "Synced server with repository.\n";
-echo "[*] Finished goal sync.\n";
+echo "Synced server with repository.<br>";
+echo "[*] Finished goal sync.<br>";
 ?>
