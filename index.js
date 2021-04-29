@@ -1,17 +1,22 @@
 const express = require('express');
 const socketio = require('socket.io')
 const app = express();
+const https = require('https');
 const http = require('http').Server(app);
 const planck = require('planck-js')
 const fs = require("fs");
-
-let io = socketio(http, {
+let server = https.createServer({
+	cert: fs.readFileSync("/etc/apache2/cert.pem"),
+	key: fs.readFileSync("/etc/apache2/key.pem")
+}, app);
+let io = socketio(server, {
+	secure: true,
 	cors: {
-		origin: "http://localhost",
+		origin: "https://starkingdoms.tk",
 		methods: ["GET", "POST"]
-	}
+	},
 });
-http.listen(25580);
+server.listen(8443);
 
 let players = {};
 let playerVitals = {};

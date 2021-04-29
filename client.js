@@ -25,7 +25,7 @@ window.onresize = function() {
 if(username == undefined || username == "" || username == " ") {
 	username = "Unnamed"
 }
-var socket = io("http://localhost:25580")
+var socket = io("https://starkingdoms.tk:8443")
 socket.emit("join", username)
 
 var players = {};
@@ -101,7 +101,9 @@ function draw() {
 	var camX = -player.x + canvas.width / 2
 	var camY = -player.y + canvas.height / 2
 	ctx.translate(camX, camY);
-
+	if (planets.earth == null) {
+		return;
+	}
 	ctx.drawImage(earth, -1250 + planets.earth.x, -1250 + planets.earth.y, 2500, 2500)
 
   ctx.drawImage(moon, -200 + planets.moon.x, -200 + planets.moon.y, 400, 400); // dont fucking touch
