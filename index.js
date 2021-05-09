@@ -115,7 +115,11 @@ function akey(socket) {
 	} else {
 		players[socket.id].applyAngularImpulse(-0.06, true);
 	}*/
-    Matter.Body.setAngularVelocity(players[socket.id], players[socket.id].angularVelocity + -.002);
+	if (players[socket.id].angularVelocity < -0.21041200776958874) {
+		return;
+	}
+    Matter.Body.setAngularVelocity(players[socket.id], players[socket.id].angularVelocity + -.0025);
+	console.log(players[socket.id].angularVelocity);
 }
 
 function dkey(socket) {
@@ -125,7 +129,11 @@ function dkey(socket) {
 	} else {
 		players[socket.id].applyAngularImpulse(0.06, true);
 	}*/
-    Matter.Body.setAngularVelocity(players[socket.id], players[socket.id].angularVelocity + .002);
+	if (players[socket.id].angularVelocity > 0.21041200776958874) {
+		                return;
+		        }
+    Matter.Body.setAngularVelocity(players[socket.id], players[socket.id].angularVelocity + .0025);
+	console.log(players[socket.id].angularVelocity);
 }
 
 
@@ -257,8 +265,8 @@ function tick() {
 			  (moduleVitals[i].x - moonBody.position.x * SCALE)) +
 			  ((moduleVitals[i].y - moonBody.position.y * SCALE) *
 			  (moduleVitals[i].y - moonBody.position.y * SCALE)))
-			var G = 1;
-      			var G2 = 0.2
+			var G = 0.5;
+      			var G2 = 0.1;
 			var strength = G * (earthBody.mass * modules[i].mass) / (distance * distance);
       			var strength2 = G * (moonBody.mass * modules[i].mass) / (distance2 * distance2);
 			var force = {
