@@ -119,7 +119,6 @@ function akey(socket) {
 		return;
 	}
     Matter.Body.setAngularVelocity(players[socket.id], players[socket.id].angularVelocity + -.0025);
-	console.log(players[socket.id].angularVelocity);
 }
 
 function dkey(socket) {
@@ -133,7 +132,6 @@ function dkey(socket) {
 		                return;
 		        }
     Matter.Body.setAngularVelocity(players[socket.id], players[socket.id].angularVelocity + .0025);
-	console.log(players[socket.id].angularVelocity);
 }
 
 
