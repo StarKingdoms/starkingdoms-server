@@ -12,6 +12,7 @@
   "dependencies": {
     "colors": "^1.4.0",
     "express": "^4.17.1",
+    "matter-js": "^0.17.1",
     "planck-js": "^0.3.28",
     "socket.io": "^4.0.0"
   }
