@@ -25,7 +25,7 @@ window.onresize = function() {
 if(username == undefined || username == "" || username == " ") {
 	username = "Unnamed"
 }
-var socket = io("http://localhost:8443")
+var socket = io("https://starkingdoms.tk:8443")
 socket.emit("join", username)
 
 var players = {};
