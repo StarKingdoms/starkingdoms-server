@@ -12,14 +12,14 @@ const logging = require("./logging.js");
 //	cert: fs.readFileSync("/etc/apache2/cert.pem"),
 //	key: fs.readFileSync("/etc/apache2/key.pem")
 //}, app);
-let io = socketio(http, {
-	secure: false,
+let io = socketio(https, {
+	secure: true,
 	cors: {
-		origin: "http://localhost",
+		origin: "https://starkingdoms.tk",
 		methods: ["GET", "POST"]
 	},
 });
-http.listen(8443);
+https.listen(8443);
 
 var Engine = Matter.Engine,
 	Runner = Matter.Runner,
