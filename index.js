@@ -58,13 +58,21 @@ let earthFixture = {
 
 var earthBody = Bodies.circle(earthPos.x, earthPos.y, 1250, {
 	//isStatic: true,
-    density: 10
-});
+    friction: .0007
+}, 50);
 
-let moonPos = {
-	x: 3500,
-	y: -1600
+let moonDistance = 5000;
+var moonLocation = {
+    x: Math.random() * 2 - 1,
+    y: Math.random() * 2 - 1
 }
+var magnitude = Math.sqrt(moonLocation.x * moonLocation.x + moonLocation.y * moonLocation.y);
+moonLocation.x /= magnitude;
+moonLocation.y /= magnitude;
+
+moonLocation.x *= moonDistance;
+moonLocation.y *= moonDistance;
+
 /*let moonBody = world.createBody({
 	type: "dynamic",
 	position: planck.Vec2(moonPos.x / SCALE, moonPos.y / SCALE)
@@ -74,8 +82,8 @@ let moonFixture = {
 	shape: moonCircle,
 	density: 150
 }*/
-var moonBody = Bodies.circle(moonPos.x, moonPos.y, 200, {
-	isStatic: true,
+var moonBody = Bodies.circle(moonLocation.x, moonLocation.y, 300, {
+	//isStatic: true,
 });
 
 /*earthBody.createFixture(earthFixture);
@@ -88,7 +96,7 @@ function wkey(socket) {
   /*var f = players[socket.id].getWorldVector(planck.Vec2(0.0, -0.2));
   var p = players[socket.id].getWorldPoint(planck.Vec2(0.0, 0.2));
   players[socket.id].applyLinearImpulse(f, p, true);*/
-	var force = { x: 0, y: -.8 };
+	var force = { x: 0, y: -.001 };
     force = Matter.Vector.rotate(force, players[socket.id].angle);
 	//force.x = force.x * Math.cos(players[socket.id].angle) - force.y * Math.sin(players[socket.id].angle);
 	//force.y = force.x * Math.sin(players[socket.id].angle) + force.y * Math.cos(players[socket.id].angle);
@@ -100,7 +108,7 @@ function skey(socket) {
   /*var f = players[socket.id].getWorldVector(planck.Vec2(0.0, 0.2));
   var p = players[socket.id].getWorldPoint(planck.Vec2(0.0, -0.2));
   players[socket.id].applyLinearImpulse(f, p, true);*/
-	var force = { x: 0, y: .8 };
+	var force = { x: 0, y: .001 };
     force = Matter.Vector.rotate(force, players[socket.id].angle);
 	//force.x = force.x * Math.cos(players[socket.id].angle) - force.y * Math.sin(players[socket.id].angle);
 	//force.y = force.x * Math.sin(players[socket.id].angle) + force.y * Math.cos(players[socket.id].angle);
@@ -168,8 +176,7 @@ io.sockets.on('connection', (socket) => {
 	boxBody.createFixture(fixtureDef)
 	players[socket.id] = boxBody;*/
 	var boxBody = Bodies.rectangle(1500, 100, 50, 50, {
-		density: 1.0,
-		friction: 0.8,
+        friction: .001,
 		restitution: 0.2,
         frictionAir: 0,
 	});
@@ -231,6 +238,7 @@ function tick() {
 		moonBody.setTransform(planck.Vec2(moonPos.x, moonPos.y), 0);*/
 		Engine.update(engine, 1000/60, 1);
         Matter.Body.setPosition(earthBody, earthPos);
+        Matter.Body.setPosition(moonBody, moonLocation);
 
 		for (let key of Object.keys(players)) {
 			playerVitals[key] = {
@@ -255,15 +263,15 @@ function tick() {
 				y: modules[i].position.y,
 				rotation: modules[i].angle
 			};
-			var distance = Math.sqrt(((moduleVitals[i].x - earthBody.position.x * SCALE) *
-			(moduleVitals[i].x - earthBody.position.x * SCALE)) +
-			((moduleVitals[i].y - earthBody.position.y * SCALE) *
-			(moduleVitals[i].y - earthBody.position.y * SCALE)))
-      			var distance2 = Math.sqrt(((moduleVitals[i].x - moonBody.position.x * SCALE) *
-			  (moduleVitals[i].x - moonBody.position.x * SCALE)) +
-			  ((moduleVitals[i].y - moonBody.position.y * SCALE) *
-			  (moduleVitals[i].y - moonBody.position.y * SCALE)))
-			var G = 2;
+			var distance = Math.sqrt(((moduleVitals[i].x - earthBody.position.x / SCALE) *
+			(moduleVitals[i].x - earthBody.position.x / SCALE)) +
+			((moduleVitals[i].y - earthBody.position.y / SCALE) *
+			(moduleVitals[i].y - earthBody.position.y / SCALE)))
+      			var distance2 = Math.sqrt(((moduleVitals[i].x - moonBody.position.x / SCALE) *
+			  (moduleVitals[i].x - moonBody.position.x / SCALE)) +
+			  ((moduleVitals[i].y - moonBody.position.y / SCALE) *
+			  (moduleVitals[i].y - moonBody.position.y / SCALE)))
+			var G = .05;
       			var G2 = 0.1;
 			var strength = G * (earthBody.mass * modules[i].mass) / (distance * distance);
       			var strength2 = G * (moonBody.mass * modules[i].mass) / (distance2 * distance2);
@@ -308,11 +316,11 @@ function tick() {
 		}
 		for (let key of Object.keys(playerVitals)) {
 			var distance = Math.sqrt(((playerVitals[key].x - earthBody.position.x) * (playerVitals[key].x - earthBody.position.x)) + ((playerVitals[key].y - earthBody.position.y) * (playerVitals[key].y - earthBody.position.y)));
-            //var distance2 = Math.sqrt(((playerVitals[key].x - moonBody.getPosition().x * SCALE) * (playerVitals[key].x - moonBody.getPosition().x * SCALE)) + ((playerVitals[key].y - moonBody.getPosition().y * SCALE) * (playerVitals[key].y - moonBody.getPosition().y * SCALE)))
-			var G = .00001;
-		   	var G2 = 0.2
+            var distance2 = Math.sqrt(((playerVitals[key].x - moonBody.position.x) * (playerVitals[key].x - moonBody.position.x)) + ((playerVitals[key].y - moonBody.position.y) * (playerVitals[key].y - moonBody.position.y)))
+			var G = .05;
+		   	var G2 = 0.1
 			var strength = G * (earthBody.mass * players[key].mass) / (distance * distance);
-            //var strength2 = G * (moonBody.getMass() * players[key].getMass()) / (distance2 * distance2);
+            var strength2 = G * (moonBody.mass * players[key].mass) / (distance2 * distance2);
 			var force = {
 				//x:  (earthBody.getPosition().x * SCALE) - playerVitals[key].x,
 				//y:  (earthBody.getPosition().y * SCALE) - playerVitals[key].y,
@@ -323,6 +331,8 @@ function tick() {
 			var force2 = {
 				//x:  (moonBody.getPosition().x * SCALE) - playerVitals[key].x,
 				//y:  (moonBody.getPosition().y * SCALE) - playerVitals[key].y,
+                x: moonBody.position.x - playerVitals[key].x,
+                y: moonBody.position.y - playerVitals[key].y
 			};
 
 
@@ -331,12 +341,14 @@ function tick() {
 			force.x *= strength;
 			force.y *= strength;
 
-      			/*force2.x /= distance2;
+      		force2.x /= distance2;
 			force2.y /= distance2;
 			force2.x *= strength2;
-			force2.y *= strength2;*/
+			force2.y *= strength2;
+            
+            console.log(distance2);
 			//players[key].applyForceToCenter(planck.Vec2(force.x + force2.x, force.y + force2.y), false);
-			Matter.Body.applyForce(players[key], {x: playerVitals[key].x, y: playerVitals[key].y}, {x: force.x, y: force.y});
+			Matter.Body.applyForce(players[key], players[key].position, {x: force.x + force2.x, y: force.y + force2.y});
 			io.to(key).emit('client-pos', playerVitals, playerVitals[key], usernames);
 			io.to(key).emit('planet-pos', planets);
 			io.to(key).emit('module-pos', moduleVitals);
@@ -371,7 +383,9 @@ function tick() {
 			moduleBody.createFixture(moduleFixture)
 
 			modules.push(moduleBody);*/
-            var moduleBody = Bodies.rectangle(location.x, location.y, 25, 25);
+            var moduleBody = Bodies.rectangle(location.x, location.y, 50, 50);
+
+            Composite.add(engine.world, moduleBody);
             modules.push(moduleBody);
     }
 
