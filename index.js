@@ -8,18 +8,18 @@ const fs = require("fs");
 const child_process = require("child_process");
 const logging = require("./logging.js");
 
-//let server = https.createServer({
-//	cert: fs.readFileSync("/etc/apache2/cert.pem"),
-//	key: fs.readFileSync("/etc/apache2/key.pem")
-//}, app);
-let io = socketio(http, {
-	secure: false,
+let server = https.createServer({
+	cert: fs.readFileSync("/etc/apache2/cert.pem"),
+	key: fs.readFileSync("/etc/apache2/key.pem")
+}, app);
+let io = socketio(server, {
+	secure: true,
 	cors: {
-		origin: "http://localhost",
+		origin: "https://starkingdoms.tk",
 		methods: ["GET", "POST"]
-	},
+	}
 });
-http.listen(8443);
+server.listen(8443);
 
 var Engine = Matter.Engine,
 	Runner = Matter.Runner,
