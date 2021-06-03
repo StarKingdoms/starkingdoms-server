@@ -13,8 +13,8 @@ if (mode) {
 	console.log("exec -> git commit -a -m \"Autosave of local changes by patch script.\"");
 	execSync("git commit -a -m \"Autosave of local changes by patch script\"");
 	console.log("[3/4] Running patch patches/02_client_prodtodev.patch");
-	console.log("exec -> patch client.js patches/02_client_prodtodev.patch");
-	execSync("patch < patches/02_client_prodtodev.patch");
+	console.log("exec -> patch -f < patches/02_client_prodtodev.patch");
+	execSync("patch -f < patches/02_client_prodtodev.patch");
 	console.log("[4/4] Save changes");
 	console.log("exec -> git commit -a -m \"Swap to developer mode\"");
 	execSync("git commit -a -m \"Swap to developer mode\"");
@@ -27,8 +27,8 @@ if (mode) {
         console.log("exec -> git commit -a -m \"Autosave of local changes by patch script.\"");
         execSync("git commit -a -m \"Autosave of lcoal changes by patch script.\"");
         console.log("[3/4] Running patch patches/01_client_devtoprod.patch");
-        console.log("exec -> patch client.js patches/01_client_devtoprod.patch");
-        execSync("patch < patches/01_client_devtoprod.patch");
+        console.log("exec -> patch -f < patches/01_client_devtoprod.patch");
+        execSync("patch -f < patches/01_client_devtoprod.patch");
         console.log("[4/4] Save changes");
         console.log("exec -> git commit -a -m \"Swap to production mode\"");
         execSync("git commit -a -m \"Swap to production mode\"");
