@@ -13,7 +13,11 @@ if (mode) {
 	console.log("exec -> git add *");
 	execSync("git add *");
 	console.log("exec -> git commit -a -m \"Autosave of local changes by patch script.\"");
-	execSync("git commit -a -m \"Autosave of local changes by patch script\"");
+	try {
+		execSync("git commit -a -m \"Autosave of local changes by patch script\"");
+	} catch (err) {
+		console.log("No changes to save: Up-to-date");
+	}
 	console.log("[3/4] Running patch patches/02_client_prodtodev.patch");
 	console.log("exec -> patch -f < patches/02_client_prodtodev.patch");
 	execSync("patch -f < patches/02_client_prodtodev.patch");
@@ -27,7 +31,11 @@ if (mode) {
         console.log("exec -> git add *");
         execSync("git add *");
         console.log("exec -> git commit -a -m \"Autosave of local changes by patch script.\"");
-        execSync("git commit -a -m \"Autosave of lcoal changes by patch script.\"");
+        try {
+                execSync("git commit -a -m \"Autosave of local changes by patch script\"");
+        } catch (err) {
+                console.log("No changes to save: Up-to-date");
+        }
         console.log("[3/4] Running patch patches/01_client_devtoprod.patch");
         console.log("exec -> patch -f < patches/01_client_devtoprod.patch");
         execSync("patch -f < patches/01_client_devtoprod.patch");
