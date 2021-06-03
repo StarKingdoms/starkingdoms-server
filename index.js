@@ -1,27 +1,11 @@
-const express = require('express');
-const socketio = require('socket.io')
-const app = express();
-const https = require('https');
-const http = require('http').Server(app);
 const Matter = require('matter-js')
 const fs = require("fs");
 const child_process = require("child_process");
 const logging = require("./logging.js");
 
-let server = https.createServer({
-	cert: fs.readFileSync("/etc/apache2/cert.pem"),
-	key: fs.readFileSync("/etc/apache2/key.pem")
-}, app);
+const core_server_util = require("./core_server_util.js");
 
-let io = socketio(server, {
-	secure: true,
-	cors: {
-		origin: "https://starkingdoms.tk",
-		methods: ["GET", "POST"]
-	}
-});
-
-server.listen(8443);
+let io = core_server_util.get_io(); // automatically determine dev mode or not
 
 var Engine = Matter.Engine,
 	Runner = Matter.Runner,
