@@ -9,7 +9,7 @@ const http = require('http').Server(app);
 const fs = require('fs');
 
 function get_io() {
-	if (options.DEVELOPER_MODE) {
+	if (options.DEVELOPMENT_MODE) {
 		// enable insecure server on localhost
 		let io = socketio(http, {
 			secure: false,
