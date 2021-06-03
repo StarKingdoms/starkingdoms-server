@@ -49,6 +49,23 @@ function chatMsg(value) {
   console.log("%cSent chat message to server.", "color:green");
 }
 
+function mkInlineImg(src) {
+  var img = new Image();//document.createElement('IMG')
+  img.src = src;
+  img.style = `  
+  display: inline-block;
+  width: 250px;
+  height: auto;
+  vertical-align: top;
+  border: 3px solid #888;
+  border-radius: 5px;`;//class = 'inline-img';
+  return img;
+}
+
+function checkForImgUrl(url) {
+    return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+}
+
 socket.on("client-pos", function(msg, thisPlayer, usernamesInfo){
   players = msg;
   player.x = thisPlayer.x;
@@ -70,8 +87,14 @@ socket.on("module-pos", (moduleInfo) => {
 
 let chat = document.getElementById("chat");
 socket.on("message", (text, username) => {
-  chat.innerHTML += '<b>' + username + "</b>: " + text + '<p>';
-	chat.scrollTop = chat.scrollHeight;
+  if (checkForImgUrl(text)) {
+    let img = mkInlineImg(text);
+    chat.innerHTML += '<b>' + username + "</b>: ";
+    chat.appendChild(img);
+    chat.innerHTML += '<p>';
+  } else {
+    chat.innerHTML += '<b>' + username + "</b>: " + text + '<p>';
+      chat.scrollTop = chat.scrollHeight;
   console.log("%cRevieved chat message from server.", "color:green");
 });
 
