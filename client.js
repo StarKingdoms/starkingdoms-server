@@ -95,6 +95,7 @@ socket.on("message", (text, username) => {
   } else {
     chat.innerHTML += '<b>' + username + "</b>: " + text + '<p>';
       chat.scrollTop = chat.scrollHeight;
+  }
   console.log("%cRevieved chat message from server.", "color:green");
 });
 
