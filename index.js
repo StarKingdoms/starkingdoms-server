@@ -238,7 +238,7 @@ function tick() {
 		/*world.step(1 / 30, 10, 10);
 		earthBody.setTransform(planck.Vec2(earthPos.x, earthPos.y), 0);
 		moonBody.setTransform(planck.Vec2(moonPos.x, moonPos.y), 0);*/
-		Engine.update(engine, 1000/60, 1);
+		Engine.update(engine, 1000/60);
         Matter.Body.setPosition(earthBody, earthPos);
         Matter.Body.setPosition(moonBody, moonLocation);
 
@@ -274,7 +274,6 @@ function tick() {
 			  ((moduleVitals[i].y - moonBody.position.y / SCALE) *
 			  (moduleVitals[i].y - moonBody.position.y / SCALE)))
 			var G = .05;
-      			var G2 = 0.1;
 			var strength = G * (earthBody.mass * modules[i].mass) / (distance * distance);
       			var strength2 = G * (moonBody.mass * modules[i].mass) / (distance2 * distance2);
 			var force = {
