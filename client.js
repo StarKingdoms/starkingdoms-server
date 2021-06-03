@@ -12,6 +12,8 @@ function getParameterByName( name ){
     return decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
+console.log("%cWelcome to StarKingdoms! Version: v0.3.0.1", "color:blue");
+
 var username = getParameterByName('username');
 
 canvas.width = window.innerWidth;
@@ -25,7 +27,7 @@ window.onresize = function() {
 if(username == undefined || username == "" || username == " ") {
 	username = "Unnamed"
 }
-var socket = io("http://localhost:8443")
+var socket = io("https://starkingdoms.tk:8443")
 socket.emit("join", username)
 
 var players = {};
@@ -44,7 +46,7 @@ const SCALE = 30;
 
 function chatMsg(value) {
   socket.emit("message", value, username);
-	
+  console.log("%cSent chat message to server.", "color:green");
 }
 
 socket.on("client-pos", function(msg, thisPlayer, usernamesInfo){
@@ -70,6 +72,7 @@ let chat = document.getElementById("chat");
 socket.on("message", (text, username) => {
   chat.innerHTML += '<b>' + username + "</b>: " + text + '<p>';
 	chat.scrollTop = chat.scrollHeight;
+  console.log("%cRevieved chat message from server.", "color:green");
 });
 
 var earth = new Image;

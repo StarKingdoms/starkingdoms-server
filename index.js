@@ -12,6 +12,7 @@ let server = https.createServer({
 	cert: fs.readFileSync("/etc/apache2/cert.pem"),
 	key: fs.readFileSync("/etc/apache2/key.pem")
 }, app);
+
 let io = socketio(server, {
 	secure: true,
 	cors: {
@@ -19,6 +20,7 @@ let io = socketio(server, {
 		methods: ["GET", "POST"]
 	}
 });
+
 server.listen(8443);
 
 var Engine = Matter.Engine,
