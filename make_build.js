@@ -5,7 +5,7 @@ console.log("[1/4] Reading server options to determine mode...");
 
 console.log(options);
 
-let mode = options.DEVELOPER_MODE;
+let mode = options.DEVELOPMENT_MODE;
 
 if (mode) {
 	console.log("-> Patching for target starkingdoms/development.");
