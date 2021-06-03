@@ -348,7 +348,6 @@ function tick() {
 			force2.x *= strength2;
 			force2.y *= strength2;
             
-            console.log(distance2);
 			//players[key].applyForceToCenter(planck.Vec2(force.x + force2.x, force.y + force2.y), false);
 			Matter.Body.applyForce(players[key], players[key].position, {x: force.x + force2.x, y: force.y + force2.y});
 			io.to(key).emit('client-pos', playerVitals, playerVitals[key], usernames);
