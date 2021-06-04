@@ -26,8 +26,8 @@ function get_io() {
 		// enable prod secure server on starkingdoms.tk
 
 		let server = https.createServer({
-			cert: fs.readFileSync(options.CERT_CERT);
-			key: fs.readFileSync(options.CERT_PRIVATE);
+			cert: fs.readFileSync(options.CERT_CERT),
+			key: fs.readFileSync(options.CERT_PRIVATE),
 		}, app);
 
 		let io = socketio(server, {
