@@ -1,4 +1,4 @@
-<?
+<?php
 if (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] !== $_SESSION['oauth2state'])) {
 
     if (isset($_SESSION['oauth2state'])) {
