@@ -4,13 +4,9 @@ const express = require('express');
 const app = express();
 const socketio = require('socket.io');
 
-const https = require('https');
-const http = require('http').Server(app);
-
-const fs = require('fs');
-
 function get_io() {
 	if (options.DEVELOPMENT_MODE) {
+		const http = require('http').Server(app);
 		// enable insecure server on localhost
 		let io = socketio(http, {
 			secure: false,
@@ -24,6 +20,8 @@ function get_io() {
 
 		return io;
 	} else {
+		const https = require('https');
+		const fs = require('fs');
 		// enable prod secure server on starkingdoms.tk
 
 		let server = https.createServer({
