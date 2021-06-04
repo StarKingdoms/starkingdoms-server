@@ -13,7 +13,7 @@ function getParameterByName( name ){
 	}
 }
 
-console.log("%cWelcome to StarKingdoms! Version: v0.3.1", "color:blue");
+console.log("%cWelcome to StarKingdoms! Version: v0.3.1.1", "color:blue");
 
 var username = getParameterByName('username');
 
@@ -22,7 +22,7 @@ canvas.height = window.innerHeight;
 
 window.onresize = function() {
 	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeigh;
+	canvas.height = window.innerHeight;
 }
 
 if(username == undefined || username == "" || username == " ") {
