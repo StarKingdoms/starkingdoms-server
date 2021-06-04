@@ -1,6 +1,7 @@
 const options = require("./SERVER_OPTIONS.js");
 
 const express = require('express');
+const app = express();
 const socketio = require('socket.io');
 
 const https = require('https');
