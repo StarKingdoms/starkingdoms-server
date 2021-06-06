@@ -42,6 +42,7 @@ $headers = array(
 curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
 $resp = curl_exec($curl);
+echo $resp;
 curl_close($curl);
 
 $userID = json_decode($resp)->id;
@@ -57,6 +58,7 @@ if ($conn->connect_error) {
     echo '{"success": "false", "error": "S17", "text": "'.$conn->connect_error.'"}';
     return;
 }
+echo $userID;
 $hashedName = $userID . time();
 $state = hash("sha256", $hashedName);
 
@@ -70,8 +72,9 @@ if ($result->num_rows != 0) {
 } else {
     $sql = "INSERT INTO `state` (`state`, `userid`) VALUES ('" . $state . "', '" . $userID . "')";
     if ($conn->query($sql) === TRUE) {
-        $redir = "Location: http://starkingdoms.tk/?state=" . $state;
-        header($redir);
+	echo $state;
+        //$redir = "Location: http://starkingdoms.tk/?state=" . $state;
+        //header($redir);
     } else {
         echo '{"success": "false", "error": "S18", "text": "'.$conn->error.'"}';
     }
