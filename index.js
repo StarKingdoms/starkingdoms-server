@@ -10,6 +10,7 @@ var Runner = Matter.Runner;
 var Bodies = Matter.Bodies;
 var Composite = Matter.Composite;
 
+let timeouts = {};
 let players = {};
 let playerVitals = {};
 let usernames = {};
@@ -104,11 +105,14 @@ io.sockets.on('connection', (socket) => {
 
 	Composite.add(engine.world, [boxBody]);
 	players[socket.id] = boxBody;
+
+	timeouts[socket.id] = setTimeout(function(){socket.disconnect();},5000);
 	
 	socket.on('join', (username) => {
 		usernames[socket.id] = username;
+		clearTimeout(timeouts[socket.id]);
+		socket.emit('ready');
 		io.emit('message', username + " joined the game", "Server");
-		socket.send('ready');
 	});
 
 	socket.on('disconnect', () => {
