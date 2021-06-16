@@ -29,23 +29,31 @@ if(username == undefined || username == "" || username == " ") {
 	username = "Unnamed";
 }
 
-var socket = io("https://starkingdoms.tk:8443");
+function setServerMsg(msg) {
+	document.getElementById("content").innerHTML = msg;
+}
+
+setServerMsg("Connecting...");
+
+var socket = io("http://localhost:8443");
 socket.emit("join", username);
 
 var failConn = setTimeout(function() {
         socket.disconnect();
 	console.log("Connection aborted after 10 seconds");
+	setServerMsg("Connection aborted: timeout");
 }, 10000);
 
 var waitConn = setTimeout(function() {
-	console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 8 seconds...");
-	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 7 seconds...");},1000);
-	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 6 seconds...");},2000);
-	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 5 seconds...");},3000);
-	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 4 seconds...");},4000);
-	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 3 seconds...");},5000);
-	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 2 seconds...");},6000);
-	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 1 second...");},7000);
+	socket.emit("join", username);
+	setServerMsg("Having trouble connecting to server. Aborting in 8...");
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 7...");socket.emit("join", username);},1000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 6...");socket.emit("join", username);},2000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 5...");socket.emit("join", username);},3000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 4...");socket.emit("join", username);},4000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 3...");socket.emit("join", username);},5000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 2...");socket.emit("join", username);},6000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 1...");socket.emit("join", username);},7000);
 }, 2000);
 
 var players = {};
@@ -125,19 +133,21 @@ socket.on("message", (text, username) => {
 socket.on("ready", () => {
 	clearTimeout(failConn);
 	clearTimeout(waitConn);
+	setServerMsg("Connected!");
+	setTimeout(function(){document.getElementById("srvmsg").style.display="hidden";},2000);
 });
 
 var earth = new Image;
-earth.src = "assets/earth.png"
+earth.src = "static/img/earth.png"
 
 var moon = new Image;
-moon.src = "assets/moon.png"
+moon.src = "static/img/moon.png"
 
 var hearty = new Image;
-hearty.src = "assets/hearty.png"
+hearty.src = "static/img/hearty.png"
 
 var cargo = new Image;
-cargo.src = "assets/cargo.png"
+cargo.src = "static/img/cargo.png"
 
 function draw() {
 	let intervalId = setInterval(() => {

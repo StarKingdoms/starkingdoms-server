@@ -2,7 +2,7 @@
   position: absolute;
   left: 0px;
   top: 0px;
-  background-image: url("assets/bg.png");
+  background-image: url("static/img/bg.png");
   z-index: 0;
 }
 #chatbox {
