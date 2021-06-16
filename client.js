@@ -29,7 +29,10 @@ if(username == undefined || username == "" || username == " ") {
 	username = "Unnamed";
 }
 
-var socket = io("https://starkingdoms.tk:8443");
+var server = `${window.location.protocol}//${window.location.host}:8443`;
+
+console.log(`%cAttempting connection to ${server}`, "color: blue");
+var socket = io(server);
 socket.emit("join", username);
 
 var players = {};
@@ -98,9 +101,8 @@ socket.on("message", (text, username) => {
 		let img = mkInlineImg(text);
 		chat.innerHTML += '<b>' + username + "</b>: ";
 		chat.appendChild(img);
-		chat.innerHTML += '<p>';
 	} else {
-		chat.innerHTML += '<b>' + username + "</b>: " + marked(text) + '<p>';
+		chat.innerHTML += marked(`**${username}**: ${text}`);
 		chat.scrollTop = chat.scrollHeight;
 	}
 	console.log("%cRevieved chat message from server.", "color:green");
