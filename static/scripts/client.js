@@ -32,6 +32,22 @@ if(username == undefined || username == "" || username == " ") {
 var socket = io("https://starkingdoms.tk:8443");
 socket.emit("join", username);
 
+var failConn = setTimeout(function() {
+        socket.disconnect();
+	console.log("Connection aborted after 10 seconds");
+}, 10000);
+
+var waitConn = setTimeout(function() {
+	console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 8 seconds...");
+	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 7 seconds...");},1000);
+	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 6 seconds...");},2000);
+	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 5 seconds...");},3000);
+	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 4 seconds...");},4000);
+	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 3 seconds...");},5000);
+	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 2 seconds...");},6000);
+	setTimeout(function(){console.log("The game is having issues connecting to the server. The game will continue attempting to connect to the server for 1 second...");},7000);
+}, 2000);
+
 var players = {};
 var player = {
 	x: 0,
@@ -104,6 +120,11 @@ socket.on("message", (text, username) => {
 		chat.scrollTop = chat.scrollHeight;
 	}
 	console.log("%cRevieved chat message from server.", "color:green");
+});
+
+socket.on("ready", () => {
+	clearTimeout(failConn);
+	clearTimeout(waitConn);
 });
 
 var earth = new Image;

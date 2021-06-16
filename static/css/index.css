@@ -1,6 +1,6 @@
 body {
     overflow: hidden;
-    background-image: url("img/bg.png");
+    background-image: url("../img/bg.png");
 }
 a {
     text-decoration: none;
@@ -77,7 +77,7 @@ a:hover {
 #logo {
     position: absolute;
 
-    background-image: url("img/logo.jpg");
+    background-image: url("../img/logo.jpg");
     background-size: cover;
 
     border-radius: 15px;

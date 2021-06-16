@@ -107,7 +107,8 @@ io.sockets.on('connection', (socket) => {
 	
 	socket.on('join', (username) => {
 		usernames[socket.id] = username;
-		io.emit('message', username + " joined the game", "Server")
+		io.emit('message', username + " joined the game", "Server");
+		socket.send('ready');
 	});
 
 	socket.on('disconnect', () => {
