@@ -100,7 +100,7 @@ socket.on("message", (text, username) => {
 		chat.appendChild(img);
 		chat.innerHTML += '<p>';
 	} else {
-		chat.innerHTML += '<b>' + username + "</b>: " + text + '<p>';
+		chat.innerHTML += '<b>' + username + "</b>: " + marked(text) + '<p>';
 		chat.scrollTop = chat.scrollHeight;
 	}
 	console.log("%cRevieved chat message from server.", "color:green");
