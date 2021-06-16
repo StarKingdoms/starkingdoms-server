@@ -254,7 +254,7 @@ function tick() {
 			Matter.Body.applyForce(players[key], players[key].position, {x: force.x + force2.x, y: force.y + force2.y});
 
 			for(let key1 of Object.keys(playerVitals)){
-					io.to(key).emit('client-pos', playerVitals[key1], playerVitals[key], usernames);
+					io.to(key).emit('client-pos', playerVitals, playerVitals[key], usernames);
 			}
 
 			io.to(key).emit('planet-pos', planets);
