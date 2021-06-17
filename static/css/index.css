@@ -1,127 +1,115 @@
 body {
-    overflow: hidden;
-    background-image: url("../img/bg.png");
+	overflow: hidden;
+	background-image: url("../img/bg.png");
 }
+
 a {
-    text-decoration: none;
-    color: #ffffff;
+	text-decoration: none;
+	color: #ffffff;
 }
 
 a:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }
-
 
 ::placeholder {
-    color: #bbbbbb;
-    opacity: 1; 
+	color: #bbbbbb;
+	opacity: 1; 
 }
-
 
 .box:not(.boxChild) {
-    position: absolute;
-
-    background-color: #9999AA;
-
-    color: white;
-
-    border: 5px solid #666677;
-    border-radius: 20px;
-
-    opacity: 75%;
+	position: absolute;
+	background-color: #9999AA;
+	color: white;
+	border: 5px solid #666677;
+	border-radius: 20px;
+	opacity: 75%;
 }
+
 .boxChild {
-    position: absolute;
-
-    background-color: #777788;
-
-    color: white;
-
-    border: 3px solid #555566;
-    border-radius: 15px;
-
-    opacity: 1;
+	position: absolute;
+	background-color: #777788;
+	color: white;
+	border: 3px solid #555566;
+	border-radius: 15px;
+	opacity: 1;
 }
+
 .centered {
-    position: absolute;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, 0)
+	position: absolute;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, 0)
 }
-.launching {
-    opacity: 0;
-}
+
 .foreground {
-    opacity: 0;
-    z-index: 1000;
-    background-color: #000000;
-    width: 100%;
-    height: 100%;
-}
-
-
-#launch {
-    opacity: 0;
-    padding-top: 15%;
+	opacity: 0;
+	z-index: 1000;
+	background-color: #000000;
+	width: 100%;
+	height: 100%;
 }
 
 #home {
-    position: absolute;
+	position: absolute;
 
-    padding: 5px;
-    left: 15%;
-    top: 15%;
-    width: 70%;
-    height: 70%;
+	padding: 5px;
+	left: 15%;
+	top: 15%;
+	width: 70%;
+	height: 70%;
 }
+
 #logo {
-    position: absolute;
+	position: absolute;
 
-    background-image: url("../img/logo.jpg");
-    background-size: cover;
+	background-image: url("../img/logo.jpg");
+	background-size: cover;
 
-    border-radius: 15px;
+	border-radius: 15px;
 
-    padding: 5px;
-    height: 15vw;
-    width: 30vw;
-    top: 15%;
+	padding: 5px;
+	height: 15vw;
+	width: 30vw;
+	top: 15%;
 }
+
 #uname {
-    width: 20%;
-    height: 10%;
-    bottom: 15%;
-    text-align: center;
-
-    font-size: 2vw;
+	width: 20%;
+	height: 10%;
+	bottom: 15%;
+	text-align: center;
+	font-size: 2vw;
 }
+
 #playbtn {
-    width: 10%;
-    bottom: 5%; 
-    text-align: center;
+	width: 10%;
+	bottom: 5%; 
+	text-align: center;
 
-    font-size: 2vw;
+	font-size: 2vw;
 }
+
 #unamelbl {
-    bottom: 27.5%;
+	bottom: 27.5%;
 }
+
 #discLink {
-    padding: 5px;
-    left: 0px;
-    bottom: 0px;
+	padding: 5px;
+	left: 0px;
+	bottom: 0px;
 
-    text-align: center;
+	text-align: center;
 
-    color: #7289DA;
+	color: #7289DA;
 }
+
 #discBox {
-    padding: 5px;
-    left: 5px;
-    top: 5px;
-    width: 10%;
-    height: 10%;
+	padding: 5px;
+	left: 5px;
+	top: 5px;
+	width: 10%;
+	height: 10%;
 
-    font-size: 1vw;
+	font-size: 1vw;
 }
-
-/* for fucks sake new classes go in line 47 */
