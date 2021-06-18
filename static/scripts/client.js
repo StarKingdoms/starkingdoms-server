@@ -35,7 +35,7 @@ function setServerMsg(msg) {
 
 setServerMsg("Connecting...");
 
-var socket = io("http://localhost:8443");
+var socket = io(window.location.protocol + "//" + window.location.host + ":8443");
 socket.emit("join", username);
 
 var failConn = setTimeout(function() {
