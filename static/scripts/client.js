@@ -122,9 +122,8 @@ socket.on("message", (text, username) => {
 		let img = mkInlineImg(text);
 		chat.innerHTML += '<b>' + username + "</b>: ";
 		chat.appendChild(img);
-		chat.innerHTML += '<p>';
 	} else {
-		chat.innerHTML += '<b>' + username + "</b>: " + text + '<p>';
+		chat.innerHTML += marked(`**${username}**: ${text}`);
 		chat.scrollTop = chat.scrollHeight;
 	}
 	console.log("%cRevieved chat message from server.", "color:green");
