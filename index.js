@@ -1,45 +1,87 @@
+const startup_time = Date.now();
+/*
+ * +----------+
+ * | Includes |
+ * +----------+
+ */
+
 const Matter = require('matter-js');
 const logging = require("./logging.js");
-
+logging.setup(true); // Setup logging with debug set to true
+logging.info("Welcome to StarKingdoms! Version 0.3.1.1.");
 const core_server_util = require("./core_server_util.js");
 
-let io = core_server_util.get_io(); // automatically determine dev mode or not
+/*
+ * +----------------+
+ * | Variable Setup |
+ * +----------------+
+ */
 
+logging.info("Creating server io object.");
+// Set up socket.io
+// This func automatically returns the correct socket.io setup for the mode specified in SERVER_OPTIONS.js
+let io = core_server_util.get_io();
+logging.info("Server io object created. Server now listening for packets.");
+
+logging.debug("Creating engine variables");
+// Matter.js variable setup
 var Engine = Matter.Engine;
 var Runner = Matter.Runner;
 var Bodies = Matter.Bodies;
 var Composite = Matter.Composite;
 
+// Game object setup
+let Game = new Object();
+
+let timeouts = {};
 let players = {};
 let playerVitals = {};
 let usernames = {};
-let modules = []; // lets readd modules wcgw
 
-tick();
+logging.info("Engine variables created.");
+
+// Just for clean access if needed
+Game.timeouts = timeouts;
+Game.players = players;
+Game.playerVitals = playerVitals;
+Game.usernames = usernames;
+
+let modules = [];
+
+logging.debug("Starting game loop");
+startGameLoop(); // Does exactly what it says. Starts the game loop.
+logging.info("Game loop started.");
+/*
+ * +----------------------+
+ * | Physics Engine Setup |
+ * +----------------------+
+ */
 
 const SCALE = 30;
+logging.debug("Starting physics setup");
 
-var engine = Engine.create({
-	gravity: {x: 0, y: 0}
-});
+var engine = Engine.create({  //
+	gravity: {x: 0, y: 0} // Create engine with gravity at 0, 0 (Completley unused as custom gravity is used)
+});                           //
 
 let earthPos = {
-	x: 0,
-	y: 0
+	x: 0, //
+	y: 0  // Create var for earth position
 }
 
 var earthBody = Bodies.circle(
-	earthPos.x,
+	earthPos.x,             // Create earth
 	earthPos.y,
 	1250,
 	{
 		friction: .0007
-	}, 50
+	},
+	50
 );
 
 let moonDistance = 5000;
 var moonLocation = {
-    x: Math.random() * 2 - 1,
+    x: Math.random() * 2 - 1, // Get random location for moon
     y: Math.random() * 2 - 1
 }
 
@@ -59,20 +101,20 @@ var moonBody = Bodies.circle(
 
 
 Composite.add(engine.world, [earthBody, moonBody]);
+logging.info("Created bodies.");
 
 var runner = Runner.create();
+logging.info("Created runner.");
 
 function wkey(socket) {
 	var force = { x: 0, y: -.001 };
 	force = Matter.Vector.rotate(force, players[socket.id].angle);
-
 	Matter.Body.applyForce(players[socket.id], players[socket.id].position, force);
 }
 
 function skey(socket) {
 	var force = { x: 0, y: .001 };
 	force = Matter.Vector.rotate(force, players[socket.id].angle);
-
 	Matter.Body.applyForce(players[socket.id], players[socket.id].position, force);
 }
 
@@ -80,7 +122,6 @@ function akey(socket) {
 	if (players[socket.id].angularVelocity < -0.21041200776958874) {
 		return;
 	}
-
 	Matter.Body.setAngularVelocity(players[socket.id], players[socket.id].angularVelocity + -.0025);
 }
 
@@ -88,13 +129,13 @@ function dkey(socket) {
 	if (players[socket.id].angularVelocity > 0.21041200776958874) {
 		return;
 	}
-
 	Matter.Body.setAngularVelocity(players[socket.id], players[socket.id].angularVelocity + .0025);
 }
 
+logging.debug("Created input functions.");
 
 io.sockets.on('connection', (socket) => {
-	console.log('Someone connected');
+	logging.info("Player connection recieved. Initiating join.");
 
 	var boxBody = Bodies.rectangle(1500, 100, 50, 50, {
 		friction: .001,
@@ -103,28 +144,45 @@ io.sockets.on('connection', (socket) => {
 	});
 
 	Composite.add(engine.world, [boxBody]);
+	logging.debug("Created player body.");
+
 	players[socket.id] = boxBody;
+
+	timeouts[socket.id] = setTimeout(function(){socket.disconnect();},5000);
+	logging.debug("Waiting for player join event.");
 	
 	socket.on('join', (username) => {
 		usernames[socket.id] = username;
-		io.emit('message', username + " joined the game", "Server")
+		clearTimeout(timeouts[socket.id]);
+		logging.info(`PlayerJoinEvent finished execution for player ${usernames[socket.id]}.`);
+		socket.emit('ready');
+		logging.debug("Sent ServerReady message.");
+		io.emit('message', username + " joined the game", "Server");
 	});
 
 	socket.on('disconnect', () => {
-		console.log('Someone disconnected');
+		logging.info("PlayerDisconnectEvent triggered. Removing player...");
 		io.emit('message', usernames[socket.id] + " left the game", "Server");
 
 		Composite.remove(engine.world, [players[socket.id]]);
-		delete players[socket.id]
-		delete playerVitals[socket.id]
-		delete usernames[socket.id]
+		delete players[socket.id];
+		delete playerVitals[socket.id];
+		logging.info(`PlayerDisconnectEvent finished for player ${usernames[socket.id]}`);
+		delete usernames[socket.id];
 	});
 
 	socket.on('message', (text, username) => {
+		logging.info(`PlayerChatEvent recieved: ${username} said ${text}`);
 		io.emit('message', text, username);
+		logging.debug(`Resent PlayerChatEvent to all players.`);
 	});
 
 	socket.on('input', (keys) => {
+		if (keys == undefined) {
+			logging.warn(`PlayerInputRejectedEvent: Player ${usernames[socket.id]} sent an invalid input packet: undefined. Ignoring.`);
+			return;
+		}
+
 		if (keys.s) {
 			skey(socket);
 		}
@@ -143,7 +201,7 @@ io.sockets.on('connection', (socket) => {
 var planets = {};
 var moduleVitals = [];
 
-function tick() {
+function startGameLoop() {
 	const intervalId = setInterval(() => {
 		Engine.update(engine, 1000/60);
 		Matter.Body.setPosition(earthBody, earthPos);
@@ -264,7 +322,6 @@ function tick() {
 	}, 1000 / 60);
 
 	var intervalId2 = setInterval(() => {
-		console.log(modules.length);
 		if(modules.length < 30) {
 			var location = {
 				x: Math.random() * 2 - 1,
@@ -284,4 +341,8 @@ function tick() {
 			modules.push(moduleBody);
 		}
 	}, 2000);
+	logging.info("Initial game loop started.");
 }
+logging.info("Game fully initialized and ready for players.");
+var startupTime = Date.now() - startup_time;
+logging.info(`Server startup completed in ${startupTime / 1000} seconds.`);
