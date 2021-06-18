@@ -1,5 +1,5 @@
 const fs = require('fs');
-const spawn = require('child_process').spawn();
+const spawn = require('child_process').spawn;
 
 var writeHandle = fs.createWriteStream('./starkingdoms.log', {flags: 'w'});
 
