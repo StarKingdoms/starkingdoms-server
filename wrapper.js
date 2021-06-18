@@ -1,7 +1,7 @@
 const fs = require('fs');
 const spawn = require('child_process').spawn;
 
-var writeHandle = fs.createWriteStream('./starkingdoms.log', {flags: 'w'});
+var writeHandle = fs.createWriteStream('./starkingdoms.txt', {flags: 'w'});
 
 var child = spawn('node', ['./index.js']);
 
