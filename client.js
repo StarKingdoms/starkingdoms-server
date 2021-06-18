@@ -29,7 +29,10 @@ if(username == undefined || username == "" || username == " ") {
 	username = "Unnamed";
 }
 
-var socket = io("https://starkingdoms.tk:8443");
+var server = `${window.location.protocol}//${window.location.host}:8443`;
+
+console.log(`%cAttempting connection to ${server}`, "color: blue");
+var socket = io(server);
 socket.emit("join", username);
 
 var players = {};
@@ -98,9 +101,8 @@ socket.on("message", (text, username) => {
 		let img = mkInlineImg(text);
 		chat.innerHTML += '<b>' + username + "</b>: ";
 		chat.appendChild(img);
-		chat.innerHTML += '<p>';
 	} else {
-		chat.innerHTML += '<b>' + username + "</b>: " + text + '<p>';
+		chat.innerHTML += marked(`**${username}**: ${text}`);
 		chat.scrollTop = chat.scrollHeight;
 	}
 	console.log("%cRevieved chat message from server.", "color:green");
@@ -118,16 +120,65 @@ hearty.src = "assets/hearty.png"
 var cargo = new Image;
 cargo.src = "assets/cargo.png"
 
+var x = 0;
+var y = 0;
+var vel = 0;
+
+var canvasStr = `0px 0px`;
+
+var newX = 0;
+var newY = 0;
+var newVel = 0;
+var newCanvasStr = `0px 0px`;
+
+var rewritePos = false;
+var rewriteVel = false;
+var rewriteCanvas = false;
+
+var position = document.getElementById('position');
+var velocity = document.getElementById('velocity');
+
+function recalculatePositioning() {
+	rewritePos = false;
+	rewriteVel = false;
+	rewriteCanvas = false;
+	newX = Math.round(player.x / 50);
+	newY = Math.round(player.y / 50);
+	newVel = Math.round(Math.sqrt(player.velX * player.velX + player.velY * player.velY));
+	newCanvasStr = `${Math.trunc(-player.x / 10)}px ${Math.trunc(-player.y / 10)}px`;
+	if (x != newX) {
+		x = newX;
+		rewritePos = true;
+	}
+	if (y != newY) {
+		y = newY;
+		rewritePos = true;
+	}
+	if (vel != newVel) {
+		vel = newVel;
+		rewriteVel = true;
+	}
+	if (newCanvasStr != canvasStr) {
+		canvasStr = newCanvasStr;
+		rewriteCanvas = true;
+	}
+
+	if (rewritePos) {
+		position.innerHTML = `Position: ${x}, ${y}`;
+	}
+	if (rewriteVel) {
+		velocity.innerHTML = `Vel: ${vel}`;
+	}
+	if (rewriteCanvas) {
+		canvas.style.backgroundPosition = canvasStr;
+	}
+}
+
 function draw() {
 	let intervalId = setInterval(() => {
+		recalculatePositioning(); // new-fangled fancy only-rewrite-dom-if-it-needs-to-be-rewritten function
+		// wow i know its amazing
 
-		var position = document.getElementById("position");
-		position.innerHTML = "Position: " + Math.round(player.x / 50) + ", " + Math.round(player.y / 50);
-		var velocity = document.getElementById("velocity");
-		velocity.innerHTML = "Vel: " + Math.round(Math.sqrt(player.velX * player.velX + player.velY * player.velY))
-
-		canvas.style.backgroundPosition = `${-player.x / 10}px ${-player.y / 10}px`
-		
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
