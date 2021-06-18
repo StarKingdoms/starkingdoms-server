@@ -29,8 +29,32 @@ if(username == undefined || username == "" || username == " ") {
 	username = "Unnamed";
 }
 
-var socket = io("https://starkingdoms.tk:8443");
+function setServerMsg(msg) {
+	document.getElementById("content").innerHTML = msg;
+}
+
+setServerMsg("Connecting...");
+
+var socket = io("http://localhost:8443");
 socket.emit("join", username);
+
+var failConn = setTimeout(function() {
+        socket.disconnect();
+	console.log("Connection aborted after 10 seconds");
+	setServerMsg("Connection aborted: timeout");
+}, 10000);
+
+var waitConn = setTimeout(function() {
+	socket.emit("join", username);
+	setServerMsg("Having trouble connecting to server. Aborting in 8...");
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 7...");socket.emit("join", username);},1000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 6...");socket.emit("join", username);},2000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 5...");socket.emit("join", username);},3000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 4...");socket.emit("join", username);},4000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 3...");socket.emit("join", username);},5000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 2...");socket.emit("join", username);},6000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 1...");socket.emit("join", username);},7000);
+}, 2000);
 
 var players = {};
 var player = {
@@ -106,27 +130,84 @@ socket.on("message", (text, username) => {
 	console.log("%cRevieved chat message from server.", "color:green");
 });
 
+socket.on("ready", () => {
+	clearTimeout(failConn);
+	clearTimeout(waitConn);
+	setServerMsg("Connected!");
+	setTimeout(function(){document.getElementById("srvmsg").style.display="hidden";},2000);
+});
+
 var earth = new Image;
-earth.src = "assets/earth.png"
+earth.src = "static/img/earth.png"
 
 var moon = new Image;
-moon.src = "assets/moon.png"
+moon.src = "static/img/moon.png"
 
 var hearty = new Image;
-hearty.src = "assets/hearty.png"
+hearty.src = "static/img/hearty.png"
 
 var cargo = new Image;
-cargo.src = "assets/cargo.png"
+cargo.src = "static/img/cargo.png"
+
+var xPos = 0;
+var yPos = 0;
+var vel = 0;
+
+var canvasStr = '0px 0px';
+
+var newXPos = 0;
+var newYPos = 0;
+var newVel = 0;
+var newCanvasStr = '0px 0px';
+
+var rewritePos = false;
+var rewriteVel = false;
+var rewriteCanvasStr = false;
+
+var position = document.getElementById("position");
+var velocity = document.getElementById("velocity");
+
+function recalculatePositioning() {
+	rewritePos = false;
+	rewriteVel = false;
+	rewriteCanvasStr = false;
+	var newXPos = Math.round(player.x / 50);
+	var newYPos = Math.round(player.y / 50);
+	var newVel = Math.round(Math.sqrt(player.velX * player.velX + player.velY * player.velY));
+
+	var newCanvasStr = `${Math.trunc(-player.x / 10)}px ${Math.trunc(-player.y / 10)}px`;
+
+	if (newXPos != xPos) {
+		rewritePos = true;
+		xPos = newXPos;
+	}
+	if (newYPos != yPos) {
+		rewritePos = true;
+		yPos = newYPos;
+	}
+	if (newVel != vel) {
+		rewriteVel = true;
+		vel = newVel;
+	}
+	if (newCanvasStr != canvasStr) {
+		rewriteCanvasStr = true;
+		canvasStr = newCanvasStr;
+	}
+	if (rewritePos) {
+		position.innerHTML = `Position: ${xPos}, ${yPos}`;
+	}
+	if (rewriteVel) {
+		velocity.innerHTML = `Vel: ${vel}`;
+	}
+	if (rewriteCanvasStr) {
+		canvas.style.backgroundPosition = canvasStr;
+	}
+}
 
 function draw() {
 	let intervalId = setInterval(() => {
 
-		var position = document.getElementById("position");
-		position.innerHTML = "Position: " + Math.round(player.x / 50) + ", " + Math.round(player.y / 50);
-		var velocity = document.getElementById("velocity");
-		velocity.innerHTML = "Vel: " + Math.round(Math.sqrt(player.velX * player.velX + player.velY * player.velY))
-
-		canvas.style.backgroundPosition = `${-player.x / 10}px ${-player.y / 10}px`
+		recalculatePositioning();
 		
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
