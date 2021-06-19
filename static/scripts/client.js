@@ -188,19 +188,13 @@ function recalculatePositioning() {
 		rewriteVel = true;
 		vel = newVel;
 	}
-	if (newCanvasStr != canvasStr) {
-		rewriteCanvasStr = true;
-		canvasStr = newCanvasStr;
-	}
 	if (rewritePos) {
 		position.innerHTML = `Position: ${xPos}, ${yPos}`;
 	}
 	if (rewriteVel) {
 		velocity.innerHTML = `Vel: ${vel}`;
 	}
-	if (rewriteCanvasStr) {
-		canvas.style.backgroundPosition = canvasStr;
-	}
+	canvas.style.backgroundPosition = canvasStr;
 }
 
 function draw() {
