@@ -14,7 +14,7 @@ const core_server_util = require("./core_server_util.js");
 const banList = require('./bans.json');
 const account_bans = banList.account;
 const ip_bans = banList.ip;
-logging.info("Loaded banlist");
+logging.info(`Loaded banlist with ${account_bans.length} account bans and ${ip_bans.length} IP bans`);
 var crypto = require('crypto');
 
 /*
