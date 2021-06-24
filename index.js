@@ -43,6 +43,7 @@ let timeouts = {};
 let players = {};
 let playerVitals = {};
 let usernames = {};
+let joinedPlayers = {};
 
 logging.info("Engine variables created.");
 
@@ -148,11 +149,15 @@ io.sockets.on('connection', (socket) => {
 		socket.emit('disallowed_ban');
 		socket.disconnect();
 	}
+	
+	joinedPlayers[socket.id] = false;
 
 	timeouts[socket.id] = setTimeout(function(){socket.disconnect();},5000);
 	logging.debug("Waiting for player join event.");
 	
 	socket.on('join', (username) => {
+		if (joinedPlayers[socket.id]) return;
+		joinedPlayers[socket.id] = true;
 		var boxBody = Bodies.rectangle(1500, 100, 50, 50, {
 			friction: .001,
 			restitution: 0.2,
