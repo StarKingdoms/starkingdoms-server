@@ -1,8 +1,8 @@
 {
   "account": [],
   "account_ban_messages": {},
-  "ip": ["d41d8cd98f00b204e9800998ecf8427e"],
-  "ip_ban_messages": {
+  "vid": ["d41d8cd98f00b204e9800998ecf8427e"],
+  "vid_ban_messages": {
     "d41d8cd98f00b204e9800998ecf8427e": "Testing"
   }
 }
