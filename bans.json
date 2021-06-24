@@ -1,4 +1,8 @@
 {
   "account": [],
-  "ip": ["1285424f27e5e2344bdc655aec9f7287"]
+  "account_ban_messages": {},
+  "ip": ["d41d8cd98f00b204e9800998ecf8427e"],
+  "ip_ban_messages": {
+    "d41d8cd98f00b204e9800998ecf8427e": "Testing"
+  }
 }
