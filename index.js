@@ -152,6 +152,7 @@ io.sockets.on('connection', (socket) => {
 	logging.debug("Waiting for player join event.");
 	
 	socket.on('join', (username, iphash) => {
+		logging.info("Join request from " + iphash);
 		if (ip_bans.includes(iphash)) {
 			logging.warn("This player has been banned! Canceling connection.");
 			socket.emit('disallowed_ban', ip_ban_messages[iphash]);
