@@ -25,6 +25,6 @@
 		</span>
 	</div>
   <canvas id="canvas"></canvas>
-  <script src="static/scripts/client.js?t=<?php echo mktime();?>"></script>
+  <script src="static/scripts/client.js?t=<?php echo mktime();?>"></script><script async src="//cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js" onload="initFingerprintJS()"></script>
 </body>
 </html>
