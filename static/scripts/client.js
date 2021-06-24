@@ -17,17 +17,6 @@ let vid = "";
 
 console.log("%cWelcome to StarKingdoms! Version: v0.3.1.1", "color:blue");
 
-const fpPromise = FingerprintJS.load()
-
-    // Get the visitor identifier when you need it.
-    fpPromise
-      .then(fp => fp.get())
-      .then(result => {
-        // This is the visitor identifier:
-        vid = result.visitorId
-        console.log("%cLogging in with fingerprint " + vid, "color: yellow");
-      });
-
 var username = getParameterByName('username');
 
 canvas.width = window.innerWidth;
@@ -49,7 +38,17 @@ function setServerMsg(msg) {
 setServerMsg("Connecting...");
 
 var socket = io(window.location.protocol + "//" + window.location.host + ":8443");
-socket.emit("join", username, vid);
+const fpPromise = FingerprintJS.load()
+
+    // Get the visitor identifier when you need it.
+    fpPromise
+      .then(fp => fp.get())
+      .then(result => {
+        // This is the visitor identifier:
+        vid = result.visitorId
+	socket.emit("join", username, vid);
+        console.log("%cLogging in with fingerprint " + vid, "color: yellow");
+      });
 
 var failConn = setTimeout(function() {
         socket.disconnect();
