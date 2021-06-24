@@ -11,6 +11,11 @@ logging.setup(true); // Setup logging with debug set to true
 logging.info("Welcome to StarKingdoms! Version 0.3.1.1.");
 const core_server_util = require("./core_server_util.js");
 
+const banList = require('./bans.json');
+const account_bans = banList.account;
+const ip_bans = banList.ip;
+logging.info("Loaded banlist");
+
 /*
  * +----------------+
  * | Variable Setup |
@@ -135,7 +140,12 @@ function dkey(socket) {
 logging.debug("Created input functions.");
 
 io.sockets.on('connection', (socket) => {
-	logging.info("Player connection recieved. Initiating join.");
+	logging.info(`Player connection recieved from ${socket.handshake.address`. Checking for IP ban...`);
+	if (ip_bans.includes(socket.handshake.address)) {
+		logging.warn("This player has been banned! Canceling connection.");
+		socket.emit('disallowed_ban');
+		socket.disconnect();
+	}
 
 	timeouts[socket.id] = setTimeout(function(){socket.disconnect();},5000);
 	logging.debug("Waiting for player join event.");
