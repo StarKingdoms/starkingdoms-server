@@ -107,8 +107,8 @@ function checkForImgUrl(url) {
 	return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
 }
 
-socket.on("disallowed_ban", function(){
-	setServerMsg("Connection failed: You have been banned from StarKingdoms. Contact a moderator for more information.");
+socket.on("disallowed_ban", function(message){
+	setServerMsg("Connection failed: You have been banned from StarKingdoms. Reason: " + message);
 });
 
 socket.on("client-pos", function(msg, thisPlayer, usernamesInfo){
