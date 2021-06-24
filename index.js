@@ -152,6 +152,9 @@ io.sockets.on('connection', (socket) => {
 	logging.debug("Waiting for player join event.");
 	
 	socket.on('join', (username, vid) => {
+		if (vid == undefined) {
+			logging.warn("Ignoring join request with VID set to undefined.");
+		}
 		logging.info("Join request with VID " + vid);
 		if (vid_bans.includes(vid)) {
 			logging.warn("This player has been banned! Canceling connection.");
