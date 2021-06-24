@@ -152,8 +152,8 @@ io.sockets.on('connection', (socket) => {
 	logging.debug("Waiting for player join event.");
 	
 	socket.on('join', (username) => {
-		logging.info("Join request from " + socket.request.socket.remoteAddress;);
-		if (ip_bans.includes(socket.request.socket.remoteAddress;)) {
+		logging.info("Join request from " + socket.request.socket.remoteAddress);
+		if (ip_bans.includes(socket.request.socket.remoteAddress)) {
 			logging.warn("This player has been banned! Canceling connection.");
 			socket.emit('disallowed_ban', ip_ban_messages[iphash]);
 			socket.disconnect();
