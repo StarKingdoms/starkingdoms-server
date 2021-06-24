@@ -137,21 +137,20 @@ logging.debug("Created input functions.");
 io.sockets.on('connection', (socket) => {
 	logging.info("Player connection recieved. Initiating join.");
 
-	var boxBody = Bodies.rectangle(1500, 100, 50, 50, {
-		friction: .001,
-		restitution: 0.2,
-		frictionAir: 0,
-	});
-
-	Composite.add(engine.world, [boxBody]);
-	logging.debug("Created player body.");
-
-	players[socket.id] = boxBody;
-
 	timeouts[socket.id] = setTimeout(function(){socket.disconnect();},5000);
 	logging.debug("Waiting for player join event.");
 	
 	socket.on('join', (username) => {
+		var boxBody = Bodies.rectangle(1500, 100, 50, 50, {
+			friction: .001,
+			restitution: 0.2,
+			frictionAir: 0,
+		});
+		
+		Composite.add(engine.world, [boxBody]);
+		logging.debug("Created player body.");
+		
+		players[socket.id] = boxBody;
 		usernames[socket.id] = username;
 		clearTimeout(timeouts[socket.id]);
 		logging.info(`PlayerJoinEvent finished execution for player ${usernames[socket.id]}.`);
