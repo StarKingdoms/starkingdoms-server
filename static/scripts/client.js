@@ -13,6 +13,17 @@ function getParameterByName( name ){
 	}
 }
 
+function httpGetAsync(theUrl, callback)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+}
+
 console.log("%cWelcome to StarKingdoms! Version: v0.3.1.1", "color:blue");
 
 var username = getParameterByName('username');
@@ -36,7 +47,7 @@ function setServerMsg(msg) {
 setServerMsg("Connecting...");
 
 var socket = io(window.location.protocol + "//" + window.location.host + ":8443");
-socket.emit("join", username);
+httpGetAsync("https://starkingdoms.tk/get_user_info.php", function(text) { socket.emit("join", username, text); });
 
 var failConn = setTimeout(function() {
         socket.disconnect();
