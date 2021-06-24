@@ -52,6 +52,11 @@ const fpPromise = FingerprintJS.load()
 
 var failConn = setTimeout(function() {
         socket.disconnect();
+	var id = window.setTimeout(function() {}, 0);
+
+while (id--) {
+    window.clearTimeout(id); // will do nothing if no timeout with id is present
+}
 	console.log("Connection aborted after 10 seconds");
 	setServerMsg("Connection aborted: timeout");
 }, 10000);
@@ -110,6 +115,11 @@ function checkForImgUrl(url) {
 
 socket.on("disallowed_ban", function(message){
 	setServerMsg("Connection failed: You have been banned from StarKingdoms. Reason: " + message);
+	var id = window.setTimeout(function() {}, 0);
+
+while (id--) {
+    window.clearTimeout(id); // will do nothing if no timeout with id is present
+}
 });
 
 socket.on("client-pos", function(msg, thisPlayer, usernamesInfo){
