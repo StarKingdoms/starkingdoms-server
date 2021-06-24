@@ -13,9 +13,9 @@ const core_server_util = require("./core_server_util.js");
 
 const banList = require('./bans.json');
 const account_bans = banList.account;
-const account_ban_messages = banList.account_messages;
+const account_ban_messages = banList.account_ban_messages;
 const vid_bans = banList.vid;
-const vid_ban_messages = banList.vid_messages;
+const vid_ban_messages = banList.vid_ban_messages;
 logging.info(`Loaded banlist with ${account_bans.length} account bans and ${vid_bans.length} fingerprint bans`);
 var crypto = require('crypto');
 
