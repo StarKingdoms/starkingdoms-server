@@ -25,6 +25,6 @@
 		</span>
 	</div>
   <canvas id="canvas"></canvas>
-  <script src="static/scripts/client.js"></script>
+  <script src="static/scripts/client.js?t=<?php echo mktime();?>"></script>
 </body>
 </html>
