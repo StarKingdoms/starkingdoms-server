@@ -59,13 +59,13 @@ var failConn = setTimeout(function() {
 var waitConn = setTimeout(function() {
 	socket.emit("join", username);
 	setServerMsg("Having trouble connecting to server. Aborting in 8...");
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 7...");socket.emit("join", username);},1000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 6...");socket.emit("join", username);},2000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 5...");socket.emit("join", username);},3000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 4...");socket.emit("join", username);},4000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 3...");socket.emit("join", username);},5000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 2...");socket.emit("join", username);},6000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 1...");socket.emit("join", username);},7000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 7...");socket.emit("join", username, vid);},1000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 6...");socket.emit("join", username, vid);},2000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 5...");socket.emit("join", username, vid);},3000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 4...");socket.emit("join", username, vid);},4000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 3...");socket.emit("join", username, vid);},5000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 2...");socket.emit("join", username, vid);},6000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 1...");socket.emit("join", username, vid);},7000);
 }, 2000);
 
 var players = {};
