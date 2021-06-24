@@ -7,6 +7,7 @@
   <meta charset="utf-8">
   <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.0.1/dist/socket.io.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
 </head>
 <body>
   <div id="chatbox">
@@ -25,6 +26,6 @@
 		</span>
 	</div>
   <canvas id="canvas"></canvas>
-  <script src="static/scripts/client.js?t=<?php echo mktime();?>"></script><script async src="//cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js" onload="initFingerprintJS()"></script>
+  <script src="static/scripts/client.js?t=<?php echo mktime();?>"></script>
 </body>
 </html>
