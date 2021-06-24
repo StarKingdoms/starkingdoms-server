@@ -141,7 +141,7 @@ function dkey(socket) {
 logging.debug("Created input functions.");
 
 io.sockets.on('connection', (socket) => {
-	let addresshash = crypto.createHash('md5').update(socket.handshake.address).digest('hex');
+	let addresshash = socket.handshake.address;
 	logging.info(`Player connection recieved from ${addresshash}. Checking for IP ban...`);
 	if (ip_bans.includes(addresshash)) {
 		logging.warn("This player has been banned! Canceling connection.");
