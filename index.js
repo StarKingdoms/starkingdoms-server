@@ -14,9 +14,9 @@ const core_server_util = require("./core_server_util.js");
 const banList = require('./bans.json');
 const account_bans = banList.account;
 const account_ban_messages = banList.account_messages;
-const ip_bans = banList.ip;
-const ip_ban_messages = banList.ip_messages;
-logging.info(`Loaded banlist with ${account_bans.length} account bans and ${ip_bans.length} IP bans`);
+const vid_bans = banList.vid;
+const vid_ban_messages = banList.vid_messages;
+logging.info(`Loaded banlist with ${account_bans.length} account bans and ${vid_bans.length} fingerprint bans`);
 var crypto = require('crypto');
 
 /*
@@ -151,11 +151,11 @@ io.sockets.on('connection', (socket) => {
 	timeouts[socket.id] = setTimeout(function(){socket.disconnect();},5000);
 	logging.debug("Waiting for player join event.");
 	
-	socket.on('join', (username) => {
-		logging.info("Join request from " + socket.client.conn.remoteAddress);
-		if (ip_bans.includes(socket.client.conn.remoteAddress)) {
+	socket.on('join', (username, vid) => {
+		logging.info("Join request with VID " + vid);
+		if (vid_bans.includes(vid)) {
 			logging.warn("This player has been banned! Canceling connection.");
-			socket.emit('disallowed_ban', ip_ban_messages[iphash]);
+			socket.emit('disallowed_ban', vid_ban_messages[iphash]);
 			socket.disconnect();
 		}
 		if (joinedPlayers[socket.id]) return;
