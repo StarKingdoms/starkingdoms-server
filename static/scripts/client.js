@@ -47,7 +47,7 @@ function setServerMsg(msg) {
 setServerMsg("Connecting...");
 
 var socket = io(window.location.protocol + "//" + window.location.host + ":8443");
-httpGetAsync("https://starkingdoms.tk/get_user_info.php", function(text) { socket.emit("join", username, text); });
+httpGetAsync("https://starkingdoms.tk/get_client_info.php", function(text) { socket.emit("join", username, text); });
 
 var failConn = setTimeout(function() {
         socket.disconnect();
