@@ -13,7 +13,9 @@ const core_server_util = require("./core_server_util.js");
 
 const banList = require('./bans.json');
 const account_bans = banList.account;
+const account_ban_messages = banList.account_messages;
 const ip_bans = banList.ip;
+const ip_ban_messages = banList.ip_messages;
 logging.info(`Loaded banlist with ${account_bans.length} account bans and ${ip_bans.length} IP bans`);
 var crypto = require('crypto');
 
@@ -142,20 +144,19 @@ function dkey(socket) {
 logging.debug("Created input functions.");
 
 io.sockets.on('connection', (socket) => {
-	let addresshash = socket.handshake.address;
-	logging.info(`Player connection recieved from ${addresshash}. Checking for IP ban...`);
-	if (ip_bans.includes(addresshash)) {
-		logging.warn("This player has been banned! Canceling connection.");
-		socket.emit('disallowed_ban');
-		socket.disconnect();
-	}
+	logging.info(`Player connection recieved.`);
 	
 	joinedPlayers[socket.id] = false;
 
 	timeouts[socket.id] = setTimeout(function(){socket.disconnect();},5000);
 	logging.debug("Waiting for player join event.");
 	
-	socket.on('join', (username) => {
+	socket.on('join', (username, iphash) => {
+		if (ip_bans.includes(iphash)) {
+			logging.warn("This player has been banned! Canceling connection.");
+			socket.emit('disallowed_ban', ip_ban_messages[iphash]);
+			socket.disconnect();
+		}
 		if (joinedPlayers[socket.id]) return;
 		joinedPlayers[socket.id] = true;
 		var boxBody = Bodies.rectangle(1500, 100, 50, 50, {
