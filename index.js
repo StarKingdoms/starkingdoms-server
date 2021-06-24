@@ -155,7 +155,7 @@ io.sockets.on('connection', (socket) => {
 		logging.info("Join request with VID " + vid);
 		if (vid_bans.includes(vid)) {
 			logging.warn("This player has been banned! Canceling connection.");
-			socket.emit('disallowed_ban', vid_ban_messages[iphash]);
+			socket.emit('disallowed_ban', vid_ban_messages[vid]);
 			socket.disconnect();
 		}
 		if (joinedPlayers[socket.id]) return;
