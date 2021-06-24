@@ -156,11 +156,6 @@ io.sockets.on('connection', (socket) => {
 			logging.warn("Ignoring join request with VID set to undefined.");
 		}
 		logging.info("Join request with VID " + vid);
-		if (vid_bans.includes(vid)) {
-			logging.warn("This player has been banned! Canceling connection.");
-			socket.emit('disallowed_ban', vid_ban_messages[vid]);
-			socket.disconnect();
-		}
 		if (joinedPlayers[socket.id]) return;
 		joinedPlayers[socket.id] = true;
 		var boxBody = Bodies.rectangle(1500, 100, 50, 50, {
@@ -179,6 +174,14 @@ io.sockets.on('connection', (socket) => {
 		socket.emit('ready');
 		logging.debug("Sent ServerReady message.");
 		io.emit('message', username + " joined the game", "Server");
+		let latestBans = require('./bans.json');
+		if (latestBans.vid.includes(vid)) {
+			logging.warn("This player has been banned! Canceling connection.");
+			socket.emit('disallowed_ban', latestBans.vid_ban_messages[vid]);
+			socket.disconnect();
+			io.emit('message', username + " was disconnected because they are banned", "Server");
+			return;
+		}
 	});
 
 	socket.on('disconnect', () => {
