@@ -20,8 +20,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
       - name: Remove prod branch
@@ -36,3 +34,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           branch: 'prod'
+      
+      - name: Checkout prod branch
+        uses: actions/checkout@v2
+        with:
+          ref: 'prod'
+          
+      - name: Reset server options
+        uses: canastro/copy-file-action@master
+        with:
+          source: "PROD_SERVER_OPTIONS.js"
+          target: "SERVER_OPTIONS.js"
+      
+      - name: Obfuscate production code
+        uses: c0repwn3r/JS-Obfuscator@e19fc85fe016cc3021d1f42e516641ba189917a6
+        with:
+          file: '/static/scripts/client.js'
+      
+      - name: Minify remaining code
+        uses: anthonyftwang/minify-action@v1.0.1
+      
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Make production build
+          branch: 'prod'
+      
+      - name: Deploy to server
+        uses: fjogeleit/http-request-action@master
+        with:
+          url: 'https://starkingdoms.tk/sync.php'
+          method: 'GET'
