@@ -15,7 +15,7 @@ function getParameterByName( name ){
 
 let vid = "";
 
-console.log("%cWelcome to StarKingdoms! Version: v0.3.1.1", "color:blue");
+console.log("%cWelcome to StarKingdoms! Version: v0.3.1.2", "color:blue");
 
 var username = getParameterByName('username');
 
