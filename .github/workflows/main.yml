@@ -45,14 +45,14 @@ jobs:
         with:
           source: "PROD_SERVER_OPTIONS.js"
           target: "SERVER_OPTIONS.js"
+        
+      - name: Minify code
+        uses: anthonyftwang/minify-action@v1.0.1
       
       - name: Obfuscate production code
         uses: c0repwn3r/JS-Obfuscator@master
         with:
           file: '/static/scripts/client.js'
-      
-      - name: Minify remaining code
-        uses: anthonyftwang/minify-action@v1.0.1
       
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
