@@ -47,7 +47,7 @@ jobs:
           target: "SERVER_OPTIONS.js"
       
       - name: Obfuscate production code
-        uses: c0repwn3r/JS-Obfuscator@97530cfa98283fe2afabca4456d2300cd8fe2cc4
+        uses: c0repwn3r/JS-Obfuscator@master
         with:
           file: '/static/scripts/client.js'
       
