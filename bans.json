@@ -1,6 +1,8 @@
 {
-  "account": [],
-  "account_ban_messages": {},
+  "account": ["966e3614f916ac57301bd42cb0bf2364"],
+  "account_ban_messages": {
+    "966e3614f916ac57301bd42cb0bf2364": "Add useless testing account ban bc they dont do anything yet lol"
+  },
   "vid": [],
   "vid_ban_messages": {}
 }
