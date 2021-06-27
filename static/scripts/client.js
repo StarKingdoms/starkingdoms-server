@@ -13,7 +13,9 @@ function getParameterByName( name ){
 	}
 }
 
-console.log("%cWelcome to StarKingdoms! Version: v0.3.1.1", "color:blue");
+let vid = "";
+
+console.log("%cWelcome to StarKingdoms! Version: v0.3.1.2", "color:blue");
 
 var username = getParameterByName('username');
 
@@ -36,10 +38,25 @@ function setServerMsg(msg) {
 setServerMsg("Connecting...");
 
 var socket = io(window.location.protocol + "//" + window.location.host + ":8443");
-socket.emit("join", username);
+const fpPromise = FingerprintJS.load()
+
+    // Get the visitor identifier when you need it.
+    fpPromise
+      .then(fp => fp.get())
+      .then(result => {
+        // This is the visitor identifier:
+        vid = result.visitorId
+	socket.emit("join", username, vid);
+        console.log("%cLogging in with fingerprint " + vid, "color: yellow");
+      });
 
 var failConn = setTimeout(function() {
         socket.disconnect();
+	var id = window.setTimeout(function() {}, 0);
+
+while (id--) {
+    window.clearTimeout(id); // will do nothing if no timeout with id is present
+}
 	console.log("Connection aborted after 10 seconds");
 	setServerMsg("Connection aborted: timeout");
 }, 10000);
@@ -47,13 +64,13 @@ var failConn = setTimeout(function() {
 var waitConn = setTimeout(function() {
 	socket.emit("join", username);
 	setServerMsg("Having trouble connecting to server. Aborting in 8...");
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 7...");socket.emit("join", username);},1000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 6...");socket.emit("join", username);},2000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 5...");socket.emit("join", username);},3000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 4...");socket.emit("join", username);},4000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 3...");socket.emit("join", username);},5000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 2...");socket.emit("join", username);},6000);
-	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 1...");socket.emit("join", username);},7000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 7...");socket.emit("join", username, vid);},1000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 6...");socket.emit("join", username, vid);},2000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 5...");socket.emit("join", username, vid);},3000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 4...");socket.emit("join", username, vid);},4000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 3...");socket.emit("join", username, vid);},5000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 2...");socket.emit("join", username, vid);},6000);
+	setTimeout(function(){setServerMsg("Having trouble connecting to server. Aborting in 1...");socket.emit("join", username, vid);},7000);
 }, 2000);
 
 var players = {};
@@ -95,6 +112,15 @@ function mkInlineImg(src) {
 function checkForImgUrl(url) {
 	return(url.match(/\.(jpeg|jpg|gif|png)$/) != null);
 }
+
+socket.on("disallowed_ban", function(message){
+	setServerMsg("Connection failed: You have been banned from StarKingdoms. Reason: " + message);
+	var id = window.setTimeout(function() {}, 0);
+
+while (id--) {
+    window.clearTimeout(id); // will do nothing if no timeout with id is present
+}
+});
 
 socket.on("client-pos", function(msg, thisPlayer, usernamesInfo){
 	players = msg;
@@ -188,19 +214,13 @@ function recalculatePositioning() {
 		rewriteVel = true;
 		vel = newVel;
 	}
-	if (newCanvasStr != canvasStr) {
-		rewriteCanvasStr = true;
-		canvasStr = newCanvasStr;
-	}
 	if (rewritePos) {
 		position.innerHTML = `Position: ${xPos}, ${yPos}`;
 	}
 	if (rewriteVel) {
 		velocity.innerHTML = `Vel: ${vel}`;
 	}
-	if (rewriteCanvasStr) {
-		canvas.style.backgroundPosition = canvasStr;
-	}
+	canvas.style.backgroundPosition = canvasStr;
 }
 
 function draw() {

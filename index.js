@@ -11,6 +11,14 @@ logging.setup(true); // Setup logging with debug set to true
 logging.info("Welcome to StarKingdoms! Version 0.3.1.1.");
 const core_server_util = require("./core_server_util.js");
 
+const banList = require('./bans.json');
+const account_bans = banList.account;
+const account_ban_messages = banList.account_ban_messages;
+const vid_bans = banList.vid;
+const vid_ban_messages = banList.vid_ban_messages;
+logging.info(`Loaded banlist with ${account_bans.length} account bans and ${vid_bans.length} fingerprint bans`);
+var crypto = require('crypto');
+
 /*
  * +----------------+
  * | Variable Setup |
@@ -37,6 +45,7 @@ let timeouts = {};
 let players = {};
 let playerVitals = {};
 let usernames = {};
+let joinedPlayers = {};
 
 logging.info("Engine variables created.");
 
@@ -135,29 +144,44 @@ function dkey(socket) {
 logging.debug("Created input functions.");
 
 io.sockets.on('connection', (socket) => {
-	logging.info("Player connection recieved. Initiating join.");
-
-	var boxBody = Bodies.rectangle(1500, 100, 50, 50, {
-		friction: .001,
-		restitution: 0.2,
-		frictionAir: 0,
-	});
-
-	Composite.add(engine.world, [boxBody]);
-	logging.debug("Created player body.");
-
-	players[socket.id] = boxBody;
+	logging.info(`Player connection recieved.`);
+	
+	joinedPlayers[socket.id] = false;
 
 	timeouts[socket.id] = setTimeout(function(){socket.disconnect();},5000);
 	logging.debug("Waiting for player join event.");
 	
-	socket.on('join', (username) => {
+	socket.on('join', (username, vid) => {
+		if (vid == undefined) {
+			logging.warn("Ignoring join request with VID set to undefined.");
+		}
+		logging.info("Join request with VID " + vid);
+		if (joinedPlayers[socket.id]) return;
+		joinedPlayers[socket.id] = true;
+		var boxBody = Bodies.rectangle(1500, 100, 50, 50, {
+			friction: .001,
+			restitution: 0.2,
+			frictionAir: 0,
+		});
+		
+		Composite.add(engine.world, [boxBody]);
+		logging.debug("Created player body.");
+		
+		players[socket.id] = boxBody;
 		usernames[socket.id] = username;
 		clearTimeout(timeouts[socket.id]);
 		logging.info(`PlayerJoinEvent finished execution for player ${usernames[socket.id]}.`);
 		socket.emit('ready');
 		logging.debug("Sent ServerReady message.");
 		io.emit('message', username + " joined the game", "Server");
+		let latestBans = require('./bans.json');
+		if (latestBans.vid.includes(vid)) {
+			logging.warn("This player has been banned! Canceling connection.");
+			socket.emit('disallowed_ban', latestBans.vid_ban_messages[vid]);
+			socket.disconnect();
+			io.emit('message', username + " was disconnected because they are banned", "Server");
+			return;
+		}
 	});
 
 	socket.on('disconnect', () => {

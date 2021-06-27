@@ -16,3 +16,10 @@ child.on('close', (code) => {
 process.on('SIGINT', () => {
   child.kill('SIGINT');
 });
+
+var restartTimeout = undefined;
+
+fs.watch(process.cwd(), (eventType, filename) => {
+  clearTimeout(restartTimeout);
+  restartTimeout = setTimeout(function(){process.exit(0);}, 1000);
+});
