@@ -1,10 +1,36 @@
+<?php
+require_once('db/conn.php');
+session_start();
+if (!isset($_SESSION["login_token"]) || empty($_SESSION["login_token"])) {
+  header("Location: login.php");
+}
+
+$login_token = $_SESSION["login_token"];
+
+$msg = '';
+
+$conn = new mysqli(DB_SERVERNAME, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+if ($conn->connect_error) {
+  global $msg;
+  $msg ='<p class="error">Database error: '.$conn->connect_error.'</p>';
+  return;
+}
+
+$conn->close();
+?>
 <html>
   <head>
-    <link rel="favicon" href="https://cdn.tm85.repl.co/md/stk/heartyBase.png" />
-    <title>PHP Test</title>
-    <!-- make login page first// ok one sec -->
+    <title>StarKingdoms Admin</title>
+    <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@0ac23ca/css/all.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/common.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/index.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <?php echo '<p>Hello World</p>'; ?> 
+    <div class="topbar tile">
+      <div class="barbutton bar-left" role="button">
+        <a href="logout.php" class="barlink"><i class="fad fa-home"></i> Log out</a>
+      </div>
+    </div>
   </body>
 </html>
