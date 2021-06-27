@@ -1,10 +1,9 @@
 .topbar {
     width: 100%;
-    height: 6%;
     box-sizing: border-box;
 }
 
-.barbutton {
+.barelement {
     display: inline-block;
 }
 
@@ -23,4 +22,50 @@
 
 .bar-right {
     float: right;
+}
+
+.nav {
+    margin-top: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.navbtn {
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 50%;
+}
+
+.navbtn:hover~.btntext {
+    display: inline-block;
+}
+
+.btntext {
+    display: none;
+    font-size: 12px;
+}
+
+#dbeditor {
+    background-color: var(--red);
+}
+
+#usereditor {
+    background-color: var(--yellow);
+}
+
+#modtools {
+    background-color: var(--blurple);
+}
+
+#logs {
+    background-color: var(--green);
+}
+
+#controls {
+    background-color: var(--plurble);
 }
