@@ -1,0 +1,14 @@
+[2021-06-17T20:49:31.503Z/INFO] Welcome to StarKingdoms! Version 0.3.1.1.
+[2021-06-17T20:49:31.558Z/INFO] Creating server io object.
+[2021-06-17T20:49:31.562Z/INFO] Server io object created. Server now listening for packets.
+[2021-06-17T20:49:31.562Z/DEBUG] Creating engine variables
+[2021-06-17T20:49:31.562Z/INFO] Engine variables created.
+[2021-06-17T20:49:31.562Z/DEBUG] Starting game loop
+[2021-06-17T20:49:31.562Z/INFO] Initial game loop started.
+[2021-06-17T20:49:31.562Z/INFO] Game loop started.
+[2021-06-17T20:49:31.563Z/DEBUG] Starting physics setup
+[2021-06-17T20:49:31.565Z/INFO] Created bodies.
+[2021-06-17T20:49:31.565Z/INFO] Created runner.
+[2021-06-17T20:49:31.565Z/DEBUG] Created input functions.
+[2021-06-17T20:49:31.565Z/INFO] Game fully initialized and ready for players.
+[2021-06-17T20:49:31.565Z/INFO] Server startup completed in 0.067 seconds.
