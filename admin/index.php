@@ -1,5 +1,5 @@
 <?php
-require_once('db/conn.php');
+require_once('db/dbconn.php');
 session_start();
 if (!isset($_SESSION["login_token"]) || empty($_SESSION["login_token"])) {
   header("Location: login.php");

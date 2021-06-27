@@ -1,3 +1,4 @@
 sync.php
 server_sync.php
 node_modules/
+admin/db/dbconn.php
