@@ -7,6 +7,7 @@
   --lightish-grey: #3c3c48;
   --green: #23cd62;
   --red: #fa5a4d;
+  --yellow: #ffea00;
   --blurple: #767bfd;
   --plurble: #af5ffa;
   --grey: #8e8d8d;
@@ -46,4 +47,14 @@ body {
 .error {
   font-size: 12px;
   color: var(--red);
+}
+
+.warning {
+  font-size: 12px;
+  color: var(--yellow);
+}
+
+.success {
+  font-size: 12px;
+  color: var(--green);
 }

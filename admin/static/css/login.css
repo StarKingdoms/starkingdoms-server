@@ -68,4 +68,5 @@ input, select, textarea {
 .form_button:hover {
   background-color: var(--green);
   color: var(--blackish);
+  display: block;
 }

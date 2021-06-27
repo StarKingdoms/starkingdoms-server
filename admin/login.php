@@ -32,7 +32,6 @@ function run() {
 
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()) {
-				echo $row["token"];
 				$_SESSION["login_token"] = $row["token"];
 			}
 			header("Location: index.php");
@@ -41,6 +40,26 @@ function run() {
 			$msg = '<p class="error">Invalid username or password</p>';
 		}
 		$conn->close();
+	}
+	if (isset($_GET["ref"])) {
+		switch ($_GET["ref"]) {
+			case 'logout':
+				global $msg;
+				$msg = '<p class="success">You have been logged out.</p>';
+				break;
+			case 'admin_nli':
+				global $msg;
+				$msg = '<p class="error">You need to log in first.</p>';
+				break;
+			case 'spftkn':
+				global $msg;
+				$msg = '<p class="error">Spoofed token detected. Please log in again.</p>';
+				break;
+			default:
+			    global $msg;
+				$msg = '<p class="warning">NV ref provided. Please log in.</p>';
+				break;
+		}
 	}
 }
 run();
