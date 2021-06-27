@@ -1,4 +1,5 @@
 const startup_time = Date.now();
+
 /*
  * +----------+
  * | Includes |
