@@ -57,35 +57,33 @@ $conn->close();
   </div>
 
   <div class="nav tile">
-    <div class="navblock">
-      <button id="dbeditor" class="navbtn bar-left">
+    <div class="spacer"></div>
+    <div class="navblock dbeditor">
+      <button id="dbeditor" class="navbtn">
         <i class="fad fa-server"></i>
       </button>
       <span class="btntext">DB Editor</span>
     </div>
-    <div class="navblock">
-      <button id="usereditor" class="navbtn bar-left">
+    <div class="navblock usereditor">
+      <button id="usereditor" class="navbtn">
         <i class="fad fa-server"></i>
       </button>
       <span class="btntext">User Editor</span>
     </div>
-    </div>
-    <div class="navblock">
-      <button id="modtools" class="navbtn bar-left">
+    <div class="navblock modtools">
+      <button id="modtools" class="navbtn">
         <i class="fad fa-server"></i>
       </button>
       <span class="btntext">Moderation</span>
     </div>
-    </div>
-    <div class="navblock">
-      <button id="logs" class="navbtn bar-left">
+    <div class="navblock serverlogs">
+      <button id="logs" class="navbtn">
         <i class="fad fa-server"></i>
       </button>
       <span class="btntext">Server Logs</span>
     </div>
-    </div>
-    <div class="navblock">
-      <button id="controls" class="navbtn bar-left">
+    <div class="navblock servercontrols">
+      <button id="controls" class="navbtn">
         <i class="fad fa-server"></i>
       </button>
       <span class="btntext">Server Controls</span>

@@ -42,12 +42,20 @@
 }
 
 .navbtn:hover~.btntext {
-    display: inline-block;
+    display: block;
 }
 
 .btntext {
     display: none;
     font-size: 12px;
+    text-align: center;
+}
+
+.navblock {
+    text-align: center;
+    float: left;
+    padding-left: 25px;
+    padding-right: 25px;
 }
 
 #dbeditor {
@@ -68,4 +76,9 @@
 
 #controls {
     background-color: var(--plurble);
+}
+
+.spacer {
+    position: relative;
+    width: 25%;
 }
