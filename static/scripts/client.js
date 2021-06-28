@@ -220,7 +220,7 @@ function recalculatePositioning() {
 	if (rewriteVel) {
 		velocity.innerHTML = `Vel: ${vel}`;
 	}
-	canvas.style.backgroundPosition = canvasStr;
+	canvas.style.backgroundPosition = newCanvasStr;
 }
 
 function draw() {
