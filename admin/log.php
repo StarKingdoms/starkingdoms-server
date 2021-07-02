@@ -41,7 +41,7 @@ $conn->close();
   <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@0ac23ca/css/all.css" rel="stylesheet"
     type="text/css" />
   <link href="static/css/common.css" rel="stylesheet" type="text/css" />
-  <link href="static/css/index.css" rel="stylesheet" type="text/css" />
+  <link href="static/css/log.css" rel="stylesheet" type="text/css" />
   <script>
     function customLinkFun(loc) {
       window.location.href = loc;
@@ -68,13 +68,13 @@ $conn->close();
     <div class="barbutton barelement bar-right" id="modtools" role="button">
       <i class="fad fa-gavel"></i> Moderation
     </div>
-    <div class="barbutton barelement bar-right" id="logs" role="button" onclick="customLinkFun('log.php');">
+    <div class="barelement bar-right" id="logs" role="button">
       <i class="fad fa-file-alt"></i> Logs
     </div>
     <div class="barbutton barelement bar-right" id="controls" role="button">
       <i class="fad fa-traffic-cone"></i> Server Controls
     </div>
-    <div class="barelement bar-right" id="home">
+    <div class="barbutton barelement bar-right" id="home" onclick="customLinkFun('index.php');">
       <i class="fad fa-home"></i> Homepage
     </div>
   </div>

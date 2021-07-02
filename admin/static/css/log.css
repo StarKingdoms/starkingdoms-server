@@ -1,0 +1,32 @@
+.topbar {
+    width: 100%;
+    box-sizing: border-box;
+    height: 6%
+}
+
+.barelement {
+    display: inline-block;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.barbutton:hover {
+    border-bottom: 2px solid var(--notwhite);
+}
+
+.barlink {
+    color: var(--notwhite);
+    text-decoration: none;
+}
+
+.bar-left {
+    float: left;
+}
+
+.bar-right {
+    float: right;
+}
+
+#logs {
+    border-bottom: 2px solid var(--notwhite);
+}

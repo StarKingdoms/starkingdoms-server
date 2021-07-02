@@ -126,7 +126,7 @@ $conn->close();
     <div class="barbutton barelement bar-right" id="modtools" role="button">
       <i class="fad fa-gavel"></i> Moderation
     </div>
-    <div class="barbutton barelement bar-right" id="logs" role="button">
+    <div class="barbutton barelement bar-right" id="logs" role="button" onclick="customLinkFun('log.php');">
       <i class="fad fa-file-alt"></i> Logs
     </div>
     <div class="barbutton barelement bar-right" id="controls" role="button">
