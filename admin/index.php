@@ -42,6 +42,11 @@ $conn->close();
     type="text/css" />
   <link href="static/css/common.css" rel="stylesheet" type="text/css" />
   <link href="static/css/index.css" rel="stylesheet" type="text/css" />
+  <script>
+    function customLinkFun(loc) {
+      window.location.href = loc;
+    }
+  </script>
 </head>
 
 <body>
@@ -54,7 +59,7 @@ $conn->close();
         <?php global $username; echo $username; ?>
       </span>
     </div>
-    <div class="barbutton barelement bar-right" id="dbeditor" role="button">
+    <div class="barbutton barelement bar-right" id="dbeditor" role="button" onclick="customLinkFun('tree.php');">
       <i class="fad fa-server"></i> Database Editor
     </div>
     <div class="barbutton barelement bar-right" id="usereditor" role="button">

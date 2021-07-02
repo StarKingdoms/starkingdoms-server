@@ -34,3 +34,15 @@
 .root {
     margin: 5px;
 }
+
+.elem {
+    padding-left: 10px;
+}
+
+.elem-child {
+    padding-left: 20px;
+}
+
+#dbeditor {
+    border-bottom: 2px solid var(--notwhite);
+}

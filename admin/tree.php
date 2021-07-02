@@ -38,6 +38,10 @@ if ($result->num_rows > 0) {
 $admin_accounts = array();
 $savestates = array();
 $loginstates = array();
+$players = array();
+$player_dict = array();
+$users = array();
+$user_dict = array();
 
 $sql = "SELECT * FROM `admin`";
 $result = $conn->query($sql);
@@ -57,12 +61,32 @@ if ($result->num_rows > 0) {
   }
 }
 
+
+
 $sql = "SELECT * FROM `state`";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
   while ($row = $result->fetch_assoc()) {
-    array_push($loginstates, new LoginState($row["id"], $row["userid"]));
+    array_push($loginstates, new LoginState($row["state"], $row["userid"]));
+  }
+}
+
+foreach ($savestates as $save) {
+  if (!isset($player_dict[$save->player])) {
+    $player_dict[$save->player] = new Player(array($save), $save->player);
+    array_push($players, $player_dict[$save->player]);
+  } else {
+    array_push($player_dict[$save->player]->saves, $save);
+  }
+}
+
+foreach ($loginstates as $state) {
+  if (!isset($user_dict[$state->userid])) {
+    $user_dict[$state->userid] = new User(array($state), $state->userid);
+    array_push($users, $user_dict[$state->userid]);
+  } else {
+    array_push($user_dict[$state->userid]->states, $state);
   }
 }
 
@@ -76,6 +100,11 @@ $conn->close();
     type="text/css" />
   <link href="static/css/common.css" rel="stylesheet" type="text/css" />
   <link href="static/css/tree.css" rel="stylesheet" type="text/css" />
+  <script>
+    function customLinkFun(loc) {
+      window.location.href = loc;
+    }
+  </script>
 </head>
 
 <body>
@@ -103,7 +132,7 @@ $conn->close();
     <div class="barbutton barelement bar-right" id="controls" role="button">
       <i class="fad fa-traffic-cone"></i> Server Controls
     </div>
-    <div class="barbutton barelement bar-right" id="home" role="button">
+    <div class="barbutton barelement bar-right" id="home" role="button" onclick="customLinkFun('index.php');">
       <i class="fad fa-home"></i> Homepage
     </div>
   </div>
@@ -111,12 +140,50 @@ $conn->close();
   <div class="tile blockcenter">
     <div class="root">
       <span><i class="fad fa-database"></i> admin</span>
+      <?php
+      global $admin_accounts;
+
+      foreach ($admin_accounts as $account) {
+        echo '<div class="elem">';
+        echo '  <span><i class="fad fa-id-card"></i> '.$account->username.'</span>';
+        echo '  <div class="elem-child">';
+        echo '    <span><i class="far fa-hashtag"></i> id: '.$account->id.'</span><br>';
+        echo '    <span><i class="fad fa-unlock-alt"></i> password: '.$account->password.'</span><br>';
+        echo '    <span><i class="fad fa-key"></i> token: '.$account->token.'</span><br>';
+        echo '  </div>';
+        echo '</div>';
+      }
+      ?>
     </div>
     <div class="root">
       <span><i class="fad fa-database"></i> saves</span>
+      <?php
+      foreach ($players as $player) {
+        echo '<div class="elem">';
+        echo '  <span><i class="fad fa-user-circle"></i> '.$player->name.'</span>';
+        echo '  <div class="elem-child">';
+        foreach ($player->saves as $save) {
+          echo '    <span><i class="fad fa-save"></i> id: '.$save->id.', data: '.$save->data.'</span><br>';
+        }
+        echo '  </div>';
+        echo '</div>';
+      }
+      ?>
     </div>
     <div class="root">
       <span><i class="fad fa-database"></i> state</span>
+      <?php
+      foreach ($users as $user) {
+        echo '<div class="elem">';
+        echo '  <span><i class="fad fa-user-circle"></i> '.$user->id.'</span>';
+        echo '  <div class="elem-child">';
+        foreach ($user->states as $state) {
+          echo '    <span><i class="fad fa-user-unlock"></i> stateid: '.$state->state.'</span><br>';
+        }
+        echo '  </div>';
+        echo '</div>';
+      }
+      ?>
     </div>
   </div>
 </body>

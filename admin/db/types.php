@@ -37,4 +37,22 @@ class LoginState {
         $this->userid = $userid;
     }
 }
+class Player {
+    public $saves = array();
+    public $name = "";
+
+    public function __construct($saves, $name) {
+        $this->saves = $saves;
+        $this->name = $name;
+    }
+}
+class User {
+    public $states = array();
+    public $id = "";
+
+    public function __construct($states, $id) {
+        $this->states = $states;
+        $this->id = $id;
+    }
+}
 ?>
