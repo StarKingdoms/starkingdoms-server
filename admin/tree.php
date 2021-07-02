@@ -1,5 +1,6 @@
 <?php
 require_once('db/dbconn.php');
+require_once('db/types.php');
 session_start();
 if (!isset($_SESSION["login_token"]) || empty($_SESSION["login_token"])) {
   header("Location: login.php?ref=admin_nli");
@@ -32,6 +33,39 @@ if ($result->num_rows > 0) {
   header("Location: login.php?ref=spftkn");
 }
 
+// Authorized, DB ahxz level 0, load roots
+
+$admin_accounts = array();
+$savestates = array();
+$loginstates = array();
+
+$sql = "SELECT * FROM `admin`";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+  while ($row = $result->fetch_assoc()) {
+    array_push($admin_accounts, new AdminAccount($row["id"], $row["username"], $row["password"], $row["token"]));
+  }
+}
+
+$sql = "SELECT * FROM `saves`";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+  while ($row = $result->fetch_assoc()) {
+    array_push($savestates, new Savestate($row["id"], $row["player"], $row["savedata"], $row["savetime"]));
+  }
+}
+
+$sql = "SELECT * FROM `state`";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+  while ($row = $result->fetch_assoc()) {
+    array_push($loginstates, new LoginState($row["id"], $row["userid"]));
+  }
+}
+
 $conn->close();
 ?>
 <html>
@@ -41,7 +75,7 @@ $conn->close();
   <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@0ac23ca/css/all.css" rel="stylesheet"
     type="text/css" />
   <link href="static/css/common.css" rel="stylesheet" type="text/css" />
-  <link href="static/css/index.css" rel="stylesheet" type="text/css" />
+  <link href="static/css/tree.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -54,7 +88,7 @@ $conn->close();
         <?php global $username; echo $username; ?>
       </span>
     </div>
-    <div class="barbutton barelement bar-right" id="dbeditor" role="button">
+    <div class="barelement bar-right" id="dbeditor">
       <i class="fad fa-server"></i> Database Editor
     </div>
     <div class="barbutton barelement bar-right" id="usereditor" role="button">
@@ -69,13 +103,21 @@ $conn->close();
     <div class="barbutton barelement bar-right" id="controls" role="button">
       <i class="fad fa-traffic-cone"></i> Server Controls
     </div>
-    <div class="barelement bar-right" id="home">
+    <div class="barbutton barelement bar-right" id="home" role="button">
       <i class="fad fa-home"></i> Homepage
     </div>
   </div>
 
-  <div class="tile">
-    
+  <div class="tile blockcenter">
+    <div class="root">
+      <span><i class="fad fa-database"></i> admin</span>
+    </div>
+    <div class="root">
+      <span><i class="fad fa-database"></i> saves</span>
+    </div>
+    <div class="root">
+      <span><i class="fad fa-database"></i> state</span>
+    </div>
   </div>
 </body>
 

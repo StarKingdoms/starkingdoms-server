@@ -1,3 +1,7 @@
+.blockcenter {
+    margin-top: 5px;
+}
+
 .topbar {
     width: 100%;
     box-sizing: border-box;
@@ -25,4 +29,8 @@
 
 .bar-right {
     float: right;
+}
+
+.root {
+    margin: 5px;
 }

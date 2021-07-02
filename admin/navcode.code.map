@@ -1,0 +1,22 @@
+document:a,
+document.getElementById:A,
+b:dbeditor,
+B:usereditor,
+c:modtools,
+C:logs,
+d:servercontrols,
+D:homepage,
+e:elemlist,
+E:currentpage,
+f:links,
+F:window,
+g:window.location,
+G:redirectToLocation [
+    -> a:url,
+    -> A:elem
+],
+h:setElemClickUrls [
+    -> a:elems,
+    -> A:ignored_elem,
+    -> b:linklist
+]

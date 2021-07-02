@@ -45,19 +45,19 @@ function run() {
 		switch ($_GET["ref"]) {
 			case 'logout':
 				global $msg;
-				$msg = '<p class="success">You have been logged out.</p>';
+				$msg = '<p class="success"><i class="fad fa-check-circle"></i> You have been logged out.</p>';
 				break;
 			case 'admin_nli':
 				global $msg;
-				$msg = '<p class="error">You need to log in first.</p>';
+				$msg = '<p class="error"><i class="fad fa-times-circle"></i> You need to log in first.</p>';
 				break;
 			case 'spftkn':
 				global $msg;
-				$msg = '<p class="error">Spoofed token detected. Please log in again.</p>';
+				$msg = '<p class="error"><i class="fad fa-exclamation-triangle"></i> Spoofed token detected. Please log in again.</p>';
 				break;
 			default:
 			    global $msg;
-				$msg = '<p class="warning">NV ref provided. Please log in.</p>';
+				$msg = '<p class="warning"><i class="fad fa-exclamation-triangle"></i> NV ref provided. Please log in.</p>';
 				break;
 		}
 	}
@@ -69,6 +69,8 @@ run();
     <link rel="stylesheet" href="./static/css/common.css" /> <!-- links need closers -->
     <link rel="stylesheet" href="./static/css/login.css" />
     <link rel="favicon" href="https://cdn.tm85.repl.co/md/stk/heartyBase.png" />
+	<link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@0ac23ca/css/all.css" rel="stylesheet"
+    type="text/css" />
   </head>
   <body>
     <div class="tile centered">
@@ -83,7 +85,7 @@ run();
 	  <input type="password" id="password" name="password" class="form_field">
 	  <label for="password" class="form_label">Password</label>
 	</div>
-	<button class="form_button">Log In</button>
+	<button class="form_button"><i class="fad fa-sign-in"></i> Log In</button>
     </div>
   </body>
 </html>
