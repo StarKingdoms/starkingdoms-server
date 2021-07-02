@@ -26,3 +26,7 @@
 .bar-right {
     float: right;
 }
+
+#home {
+    border-bottom: 2px solid var(--notwhite);
+}
