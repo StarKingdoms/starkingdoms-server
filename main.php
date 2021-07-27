@@ -9,18 +9,6 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-L7R4GMFST9"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-L7R4GMFST9');</script>
-  <script>
-  function initFingerprintJS() {
-    FingerprintJS.load({token: 'eY9P56O5Kymn7GZ7Fuyy'})
-      .then(fp => fp.get())
-      .then(result => console.log(result.visitorId));
-  }
-</script>
-<script
-  async
-  src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs-pro@3/dist/fp.min.js"
-  onload="initFingerprintJS()"
-></script>
 </head>
 <body>
   <div id="chatbox">
