@@ -188,12 +188,12 @@ io.sockets.on('connection', (socket) => {
 	socket.on('disconnect', () => {
 		logging.info("PlayerDisconnectEvent triggered. Removing player...");
 		io.emit('message', usernames[socket.id] + " left the game", "Server");
-
-		Composite.remove(engine.world, [players[socket.id]]);
+		
 		if (players[socket.id] == null) {
 			logging.info(`PlayerDisconnectEvent finished for player ${usernames[socket.id]}`);
 			return;
 		}
+		Composite.remove(engine.world, [players[socket.id]]);
 		delete players[socket.id];
 		delete playerVitals[socket.id];
 		logging.info(`PlayerDisconnectEvent finished for player ${usernames[socket.id]}`);
