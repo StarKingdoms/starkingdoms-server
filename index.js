@@ -190,6 +190,10 @@ io.sockets.on('connection', (socket) => {
 		io.emit('message', usernames[socket.id] + " left the game", "Server");
 
 		Composite.remove(engine.world, [players[socket.id]]);
+		if (players[socket.id] == null) {
+			logging.info(`PlayerDisconnectEvent finished for player ${usernames[socket.id]}`);
+			return;
+		}
 		delete players[socket.id];
 		delete playerVitals[socket.id];
 		logging.info(`PlayerDisconnectEvent finished for player ${usernames[socket.id]}`);
