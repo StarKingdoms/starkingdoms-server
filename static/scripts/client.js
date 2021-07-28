@@ -38,14 +38,14 @@ function setServerMsg(msg) {
 setServerMsg("Connecting...");
 
 var socket = io(window.location.protocol + "//" + window.location.host + ":8443");
-const fpPromise = FingerprintJS.load()
+const fpPromise = FingerprintJS.load({token: 'eY9P56O5Kymn7GZ7Fuyy', endpoint: 'https://auth.coresdev.ml'})
 
     // Get the visitor identifier when you need it.
     fpPromise
       .then(fp => fp.get())
       .then(result => {
         // This is the visitor identifier:
-        vid = result.visitorId
+        vid = result.visitorId;
 	socket.emit("join", username, vid);
         console.log("%cLogging in with fingerprint " + vid, "color: yellow");
       });
