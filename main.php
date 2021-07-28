@@ -8,8 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.0.1/dist/socket.io.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-L7R4GMFST9"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-L7R4GMFST9');</script>
-  <script>function fpjsi(){const fpPromise=FingerprintJS.load({token:'eY9P56O5Kymn7GZ7Fuyy'});fpPromise.then(fp => fp.get()).then(result => console.log(result.visitorId));}</script>
-  <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs-pro@3/dist/fp.min.js" onload="fpjsi()"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs-pro@3/dist/fp.min.js"></script>
 </head>
 <body>
   <div id="chatbox">
