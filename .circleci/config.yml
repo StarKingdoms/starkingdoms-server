@@ -28,3 +28,6 @@ workflows:
   build-release:
     jobs:
       - starkingdoms-build-release
+      branches:
+        only:
+          - master
