@@ -5,10 +5,6 @@ version: 2.1
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   starkingdoms-build-release:
-    filters:
-      branches:
-        only:
-          - master
     # Specify the execution environment.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
@@ -26,34 +22,9 @@ jobs:
       - run:
           name: "Cargo - Test"
           command: "cargo test"
-  starkingdoms-build:
-    filters:
-      branches:
-        ignore:
-          - master
-    # Specify the execution environment.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      - image: cimg/rust:1.55.0
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: "Cargo - Check"
-          command: "cargo check"
-      - run:
-          name: "Cargo - Build (Development)"
-          command: "cargo build"
-      - run:
-          name: "Cargo - Test"
-          command: "cargo test"
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   build-release:
     jobs:
       - starkingdoms-build-release
-  build-development:
-    jobs:
-      - starkingdoms-build
