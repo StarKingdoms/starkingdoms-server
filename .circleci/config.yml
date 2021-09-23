@@ -40,36 +40,6 @@ jobs:
       - run:
           name: "Cargo - Test"
           command: "cargo test"
-  nebula-publish:
-    # Specify the execution environment.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: "Cargo - Check"
-          command: "cargo check"
-      - run:
-          name: "Cargo - Build (Release)"
-          command: "cargo build --release"
-      - run:
-          name: "Cargo - Test"
-          command: "cargo test"
-      - run:
-          name: "Nebula - Authenticate"
-          command: "nebula-build auth"
-      - run:
-          name: "Nebula - Fetch"
-          command: "nebula-build prep"
-      - run:
-          name: "Nebula - Pack"
-          command: "nebula-build pack"
-      - run:
-          name: "Nebula - Publish"
-          command: "nebula-build pub"
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -79,6 +49,3 @@ workflows:
   build-development:
     jobs:
       - starkingdoms-build
-  publish-release:
-    jobs:
-      - nebula-publish
