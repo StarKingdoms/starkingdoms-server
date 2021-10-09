@@ -1,8 +1,12 @@
-[package]
+package]
 name = "starkingdoms-server"
-version = "0.1.1"
+version = "0.1.0"
 edition = "2018"
-repository = "https://github.com/StarKingdoms/starkingdoms-server"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rapier2d = "0.11.0"
+websocket = "0.22.0"
+futures = "0.1"
+tokio = { version = "0.1"}
+tokio-tls = { version = "0.2.0" }
