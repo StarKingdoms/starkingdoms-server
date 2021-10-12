@@ -4,13 +4,14 @@ use std::collections::HashMap;
 
 use futures::channel::mpsc::UnboundedSender;
 
-use crate::packet::{
+use serde_cbor::Deserializer;
+
+use crate::packet::packetlib::{
     PlayerMetadata,
     PlayerInput,
-    PlayerJoin,
-    NearbyPlayers,
     NearbyPlayer,
     ChatMessage,
+    LoginPacket
 };
 use std::net::{
     SocketAddr
@@ -19,6 +20,7 @@ use std::net::{
 type Tx = UnboundedSender<Message>;
 type PeerMap = Arc<Mutex<HashMap<SocketAddr, Tx>>>;
 
-pub fn parse_incoming_packet(peer_map: PeerMap, addr: SocketAddr) {
-    return;
+pub fn parse_incoming_packet(peer_map: PeerMap, addr: SocketAddr, msg: Message) {
+    // Get message as binary and attempt to decode it
+
 }
