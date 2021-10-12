@@ -1,9 +1,6 @@
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize)]
-use serde_derive::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize)]
 pub struct PlayerMetadata {
     x_pos: f32,
     y_pos: f32,
