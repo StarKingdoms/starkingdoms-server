@@ -9,3 +9,5 @@ edition = "2018"
 async-tungstenite = "*"
 futures = "*"
 async-std = { version = "*", features = ["attributes"] }
+serde_cbor = "*"
+serde = { version = "*", features = ["derive"] }
