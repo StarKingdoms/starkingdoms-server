@@ -21,6 +21,7 @@ type Tx = UnboundedSender<Message>;
 type PeerMap = Arc<Mutex<HashMap<SocketAddr, Tx>>>;
 
 pub async fn handle_connection(peer_map: PeerMap, raw_stream: TcpStream, addr: SocketAddr) {
+    println!("Hello from connection handler");
     println!("Incoming TCP connection from: {}", addr);
 
     let ws_stream = async_tungstenite::accept_async(raw_stream)
@@ -46,7 +47,7 @@ pub async fn handle_connection(peer_map: PeerMap, raw_stream: TcpStream, addr: S
                 addr
             );
             
-            parse_incoming_packet(peer_map.clone(), addr);
+            parse_incoming_packet(peer_map.clone(), addr, msg);
 
             future::ok(())
         });
@@ -61,6 +62,7 @@ pub async fn handle_connection(peer_map: PeerMap, raw_stream: TcpStream, addr: S
 }
 
 pub async fn run(addr: String) -> Result<(), IoError> {
+    println!("Hello from connection thread");
     let state = PeerMap::new(Mutex::new(HashMap::new()));
 
     // Create the event loop and TCP listener we'll accept connections on.
