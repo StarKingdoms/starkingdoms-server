@@ -1,7 +1,7 @@
 use rapier2d::prelude::*;
 use rapier2d::crossbeam::channel::{Sender as CSender, Receiver as CReceiver, unbounded as c_channel};
 
-struct Simulation {
+pub struct Simulation {
     pub rigidbodies: RigidBodySet,
     pub colliders: ColliderSet,
     pub joints: JointSet,
@@ -9,7 +9,7 @@ struct Simulation {
     integration_parameters: IntegrationParameters,
     broad_phase: BroadPhase,
     narrow_phase: NarrowPhase,
-    ccd_solver: CCDSolver
+    ccd_solver: CCDSolver,
     pipeline: PhysicsPipeline,
     intersection_events: CReceiver<IntersectionEvent>,
     contact_events: CReceiver<ContactEvent>,
@@ -27,7 +27,7 @@ impl Simulation {
         integration_parameters.dt = step_time;
         integration_parameters.erp = 0.4;
         integration_parameters.max_position_iterations = 8;
-        integration_parameters.max_velocity_iteration = 8;
+        integration_parameters.max_velocity_iterations = 8;
 
         let simulation = Simulation {
             pipeline: PhysicsPipeline::new(),
@@ -36,7 +36,7 @@ impl Simulation {
             narrow_phase: NarrowPhase::new(),
             ccd_solver: CCDSolver::new(),
 
-            bodies: RigidBodySet::new(),
+            rigidbodies: RigidBodySet::new(),
             islands: IslandManager::new(),
             colliders,
             joints: JointSet::new(),

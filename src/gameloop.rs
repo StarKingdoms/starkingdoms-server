@@ -14,13 +14,12 @@ pub async fn gameloop() {
     const TIMESTEP: f32 = 1.0 / (TICKS_PER_SECOND as f32);
     let mut ticker = async_std::stream::interval(std::time::Duration::from_secs_f32(TIMESTEP));
 
-    physics::physicsInit();
+    let mut simulation = physics::Simulation::new(TIMESTEP);
 
     loop {
 
         select_biased! {
             _ = ticker.next().fuse() => {
-                physics::physics();
             }
         }
     }
