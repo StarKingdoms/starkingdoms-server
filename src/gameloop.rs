@@ -4,6 +4,9 @@ use async_std::task;
 use futures::select_biased;
 use futures::StreamExt;
 use futures::FutureExt;
+use rapier2d::dynamics::{RigidBodyBuilder};
+use rapier2d::geometry::{ColliderBuilder};
+use rapier2d::prelude::Vector;
 
 pub const TICKS_PER_SECOND: u8 = 20;
 
@@ -16,10 +19,19 @@ pub async fn gameloop() {
 
     let mut simulation = physics::Simulation::new(TIMESTEP);
 
+    let rigid_body = RigidBodyBuilder::new_dynamic()
+        .translation(Vector::new(0.0, 10.0))
+        .build();
+    let collider = ColliderBuilder::ball(0.5). restitution(0.7).build();
+    let ball_body_handle = simulation.rigidbodies.insert(rigid_body);
+    simulation.colliders.insert_with_parent(collider, ball_body_handle, &mut simulation.rigidbodies);
+
     loop {
 
         select_biased! {
             _ = ticker.next().fuse() => {
+                simulation.tick();
+                println!("Ball altitude: {}", &simulation.rigidbodies[ball_body_handle].translation().y);
             }
         }
     }
