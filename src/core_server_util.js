@@ -11,8 +11,8 @@ function get_io() {
 		let io = socketio(http, {
 			secure: false,
 			cors: {
-				origin: "http://localhost",
-				methods: ["GET", "POST"]
+				methods: ["GET", "POST"],
+				origin: "*"
 			}
 		});
 

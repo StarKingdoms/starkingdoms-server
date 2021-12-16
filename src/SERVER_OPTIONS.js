@@ -15,7 +15,7 @@ exports.CORS_ORIGIN = "inherit";
 exports.METHODS = ["GET", "POST"];
 
 // general settings
-exports.PORT = 8443;
+exports.PORT = 8080;
 
 // DO NOT MODIFY THE LINES ABOVE
 // ONLY CHANGE THIS LINE!
