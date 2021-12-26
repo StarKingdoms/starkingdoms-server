@@ -13,12 +13,14 @@ gameLoop();
 let world = new rapier.World({x:0.0,y:0.0});
 let players = {};
 let usernames = {};
+const SCALE = 10;
 
-let earthDesc = rapier.RigidBodyDesc.newStatic();
-let earthColliderDesc = new rapier.ColliderDesc(new rapier.Ball(125))
+let earthDesc = rapier.RigidBodyDesc.newStatic()
     .setTranslation(0.0, 0.0);
+let earthColliderDesc = new rapier.ColliderDesc(new rapier.Ball(1250 / SCALE))
 let earth = world.createRigidBody(earthDesc);
 let earthCollider = world.createCollider(earthColliderDesc, earth.handle);
+console.log(earth.mass());
 
 console.log(world.timestep);
 io.sockets.on('connection', (socket) => {
@@ -26,12 +28,12 @@ io.sockets.on('connection', (socket) => {
         socket.emit('ready', socket.id);
         let angle = Math.random() * Math.PI;
         let pos = {
-            x: Math.cos(angle) * 130,
-            y: Math.sin(angle) * 130
+            x: Math.cos(angle) * 1300 / SCALE,
+            y: Math.sin(angle) * 1300 / SCALE
         };
-        let playerBodyDesc = rapier.RigidBodyDesc.newDynamic();
-        let colliderDesc = rapier.ColliderDesc.cuboid(5, 5)
+        let playerBodyDesc = rapier.RigidBodyDesc.newDynamic()
             .setTranslation(pos.x, pos.y);
+        let colliderDesc = rapier.ColliderDesc.cuboid(50/SCALE, 50/SCALE);
         let player = world.createRigidBody(playerBodyDesc);
         let collider = world.createCollider(colliderDesc, player.handle);
         players[socket.id] = player;
@@ -46,7 +48,7 @@ io.sockets.on('connection', (socket) => {
             console.log("Player already disconnected");
             return;
         }
-        world.removeRigidBody(players[socket.id].handle);
+        world.removeRigidBody(players[socket.id]);
         delete players[socket.id];
         delete usernames[socket.id];
     });
@@ -54,15 +56,13 @@ io.sockets.on('connection', (socket) => {
 
 function gameLoop() {
     const intervalId = setInterval(() => {
-        console.log("==============");
         world.step();
-        world.bodies.forEachRigidBody((body) => {console.log(body)});
 
         let Earth = world.getRigidBody(earth.handle);
         planets = {
             earth: {
-                x: Earth.translation().x * 10,
-                y: Earth.translation().y * 10
+                x: Earth.translation().x * SCALE,
+                y: Earth.translation().y * SCALE
             },
             moon: {
                 x: 100000,
@@ -74,10 +74,10 @@ function gameLoop() {
         playerVitals = [];
         for (let key of Object.keys(players)) {
             playerVitals[key] = {
-                x: players[key].translation().x,
-                y: players[key].translation().y,
-                velX: players[key].linvel().x,
-                velY: players[key].linvel().y,
+                x: players[key].translation().x * SCALE,
+                y: players[key].translation().y * SCALE,
+                velX: players[key].linvel().x * SCALE,
+                velY: players[key].linvel().y * SCALE,
                 rotation: players[key].rotation()
             };
         }
