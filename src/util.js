@@ -12,7 +12,7 @@ function calcGravity(timeStep, body1, body2, SCALE) {
     var distance = Math.sqrt(
         (player.x - planet.x) * (player.x - planet.x) +
         (player.y - planet.y) * (player.y - planet.y));
-    var G = 0.0015;
+    var G = 0.02;
 
     var strength = G * (planet.mass * player.mass) / (Math.pow(distance, 2.5));
 
