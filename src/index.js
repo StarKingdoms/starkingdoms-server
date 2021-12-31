@@ -109,9 +109,7 @@ io.sockets.on('connection', (socket) => {
         if (keys.a===true) pressed_a(socket);
         if (keys.d===true) pressed_d(socket);
         if (mouses[socket.id] == undefined) return;
-        console.log(mouses[socket.id])
-        mouses[socket.id].setTranslation(mouse.x/SCALE,mouse.y/SCALE)
-        console.log(mouses[socket.id].translation())
+        mouses[socket.id].setTranslation({x:mouse.x/SCALE,y:mouse.y/SCALE})
         mouses[socket.id].module = mouses[socket.id].module
         mouses[socket.id].button = buttons;
     });
@@ -153,8 +151,9 @@ function gameLoop() {
                     for(let i=0; i < modules.length; i++) {
                         if(handle === modules[i].handle && mouses[key].module == 0 &&
                             mouses[key].button == 1) {
-                            //modules[i].setDominanceGroup(-127);
+                            modules[i].setDominanceGroup(-127);
                             moduleGrab[i].grabbed = 1;
+                            console.log("Hello from Narnia")
                             moduleGrab[i].mouse = key;
                             mouses[key].module = 1;
                             return false;
@@ -166,10 +165,10 @@ function gameLoop() {
                 mouses[key].module = 0;
                 for(let i=0; i < modules.length; i++) {
                     if(moduleGrab[i].mouse == key) {
-                        /*modules[i].setDominanceGroup(0);
+                        modules[i].setDominanceGroup(0);
                         modules[i].wakeUp();
                         modules[i].setLinvel({x:0,y:0}, true);
-                        modules[i].setAngvel(0, true);*/
+                        modules[i].setAngvel(0, true);
                         moduleGrab[i].grabbed = 0;
                         moduleGrab[i].mouse = 0;
                     }
@@ -222,8 +221,8 @@ function gameLoop() {
         for(let i = 0; i < modules.length; i++) {
             if(moduleGrab[i].grabbed == 1) {
                 let thisMousePos = {
-                    x: mousePos[moduleGrab[i].mouse].x,
-                    y: mousePos[moduleGrab[i].mouse].y
+                    x: mouses[moduleGrab[i].mouse].translation().x,
+                    y: mouses[moduleGrab[i].mouse].translation().y
                 };
                 let vel = {
                     x: thisMousePos.x - modules[i].translation().x,
