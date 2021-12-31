@@ -13,10 +13,12 @@ gameLoop();
 // start game code
 let world = new rapier.World({x:0.0,y:0.0});
 world.maxPositionIterations = 8;
-world.maxVelocityIterations = 8; let players = {};
+world.maxVelocityIterations = 8;
+let players = {};
 let mouses = {};
 let mousePos = {};
 let usernames = {};
+let moduleDetectors = {};
 let modules = [];
 let moduleGrab = [];
 const SCALE = 10;
@@ -83,23 +85,35 @@ io.sockets.on('connection', (socket) => {
         let colliderDesc = rapier.ColliderDesc.cuboid(25/SCALE, 25/SCALE);
         let player = world.createRigidBody(playerBodyDesc);
         let collider = world.createCollider(colliderDesc, player.handle);
-        let mouse = new rapier.Cuboid(0.1, 0.1);
+        let mouseDesc = rapier.ColliderDesc.cuboid(0.1, 0.1)
+            .setTranslation(0, 0)
+            .setSensor(true);
+        let mouse = world.createCollider(mouseDesc)
+        let moduleDetector = new rapier.Ball(40/SCALE);
+        
+        mouse.module = 0
+        mouse.button = 0
         players[socket.id] = player;
         mouses[socket.id] = mouse;
+
         usernames[socket.id] = username;
-        mousePos[socket.id] = {x:0,y:0,module:0};
+        moduleDetectors[socket.id] = moduleDetector;
     });
     socket.on('message', (text, username) => {
         io.emit('message', text, username);
     });
-    socket.on('input', (keys, mouse={x:0,y:0,module:0,button:0},buttons) => {
+    socket.on('input', (keys, mouse={x:0,y:0},buttons) => {
         if (keys == undefined) return;
         if (keys.s===true) pressed_s(socket);
         if (keys.w===true) pressed_w(socket);
         if (keys.a===true) pressed_a(socket);
         if (keys.d===true) pressed_d(socket);
-        mousePos[socket.id] = {x:mouse.x/SCALE,y:mouse.y/SCALE,
-            module:mousePos[socket.id].module, button:buttons};
+        if (mouses[socket.id] == undefined) return;
+        console.log(mouses[socket.id])
+        mouses[socket.id].setTranslation(mouse.x/SCALE,mouse.y/SCALE)
+        console.log(mouses[socket.id].translation())
+        mouses[socket.id].module = mouses[socket.id].module
+        mouses[socket.id].button = buttons;
     });
     socket.on('disconnect', () => {
         io.emit('message', usernames[socket.id] + "left the game", "Server");
@@ -135,33 +149,50 @@ function gameLoop() {
         }
 
         for(let key of Object.keys(mouses)) {
-            world.intersectionsWithShape(mousePos[key], 0, mouses[key],
-                0xFFFFFFFF, (handle) => {
+            world.intersectionsWith(mouses[key].handle, (handle) => {
                     for(let i=0; i < modules.length; i++) {
-                        if(handle === modules[i].handle && mousePos[key].module == 0 &&
-                            mousePos[key].button == 1) {
-                            modules[i].setDominanceGroup(-127);
+                        if(handle === modules[i].handle && mouses[key].module == 0 &&
+                            mouses[key].button == 1) {
+                            //modules[i].setDominanceGroup(-127);
                             moduleGrab[i].grabbed = 1;
                             moduleGrab[i].mouse = key;
-                            mousePos[key].module = 1;
+                            mouses[key].module = 1;
                             return false;
                         }
                     }
                     return true;
-                });
-            if(mousePos[key].button == 0) {
-                mousePos[key].module = 0;
+            });
+            if(mouses[key].button == 0) {
+                mouses[key].module = 0;
                 for(let i=0; i < modules.length; i++) {
                     if(moduleGrab[i].mouse == key) {
-                        modules[i].setDominanceGroup(0);
+                        /*modules[i].setDominanceGroup(0);
                         modules[i].wakeUp();
                         modules[i].setLinvel({x:0,y:0}, true);
-                        modules[i].setAngvel(0, true);
+                        modules[i].setAngvel(0, true);*/
                         moduleGrab[i].grabbed = 0;
                         moduleGrab[i].mouse = 0;
                     }
                 }
             }
+        }
+
+        for(let key of Object.keys(moduleDetectors)) {
+            world.intersectionsWithShape(players[key].translation(), 0,
+                moduleDetectors[key], 0xFFFFFFFF, (handle) => {
+                for(let i=0; i < modules.length; i++) {
+                    if(handle === modules[i].handle && moduleGrab[i].grabbed != 0) {
+                        let offset = {x:0, y: 5};
+                        offset = rotateVector(offset, players[key].rotation());
+                        let newPos = {
+                            x: players[key].translation().x+offset.x,
+                            y: players[key].translation().y+offset.y,
+                        }
+                        modules[i].wakeUp();
+                        modules[i].setTranslation(newPos, true);
+                    }
+                }
+            });
         }
 
         
@@ -240,3 +271,8 @@ function gameLoop() {
         }
     }, 2000);
 }
+
+process.on('SIGTERM', () => {
+    io.sockets.disconnect()
+    process.exit(0)
+})
