@@ -1,13 +1,41 @@
+/***********/
+/* Imports */
+/***********/
 const express = require('express');
 const app = express();
 const http = require('http');
 const { Server } = require("socket.io");
 const core_server_util = require("./core_server_util.js");
 const util = require('./util.js');
+<<<<<<< HEAD
 const rapier = require('@c0repwn3r/rapier2d-node');
-let io = core_server_util.get_io();
+=======
+const { Logger } = require("./logging.js");
 
+const STKVERSION = 'alpha-1.0.0';
+
+/*
+ * Logger setup
+ */
+
+logger = new Logger("ServerThread");
+logger.info(`Welcome to StarKingdoms! Version ${STKVERSION}.`);
+
+start_time = Date.now() / 1000;
+
+logger.info('Initializing server io');
+>>>>>>> 437a524e07c5286e82969398a56555338a577ea4
+let io = core_server_util.get_io();
+logger.info('Server is now listening for packets');
+
+<<<<<<< HEAD
 // start game code
+=======
+logger.debug('Creating engine variables');
+/*
+ * Variable setup
+ */
+>>>>>>> 437a524e07c5286e82969398a56555338a577ea4
 let world = new rapier.World({x:0.0,y:0.0});
 world.maxPositionIterations = 8;
 world.maxVelocityIterations = 8;
@@ -37,8 +65,13 @@ let moonColliderDesc = new rapier.ColliderDesc(new rapier.Ball(300 / SCALE))
     .setDensity(3);
 let moon = world.createRigidBody(moonDesc)
 let moonCollider = world.createCollider(moonColliderDesc, moon.handle);
+logger.info('Engine variables setup');
 
-console.log(world.timestep);
+gameLoop();
+
+logger.info('Started gameloop');
+
+logger.debug('Creating callback functions');
 
 gameLoop();
 
@@ -51,14 +84,12 @@ function rotateVector(v, angle) {
 function pressed_s(socket) {
     let player = world.getRigidBody(players[socket.id].handle);
     player.wakeUp();
-    player.applyForce(rotateVector({x:0,y:100},player.rotation())
-        , false);
+    player.applyForce(rotateVector({x:0,y:100}, player.rotation()), false);
 }
 function pressed_w(socket) {
     let player = world.getRigidBody(players[socket.id].handle);
     player.wakeUp();
-    player.applyForce(rotateVector({x:0.0,y:-100},player.rotation())
-        , false);
+    player.applyForce(rotateVector({x:0.0,y:-100}, player.rotation()), false);
 }
 function pressed_a(socket) {
     let player = world.getRigidBody(players[socket.id].handle);
@@ -70,10 +101,16 @@ function pressed_d(socket) {
     player.wakeUp();
     player.applyTorque(100, true);
 }
+logger.info('Created callback functions')
 
 io.sockets.on('connection', (socket) => {
+    logger.info('Player connection recieved')
+    plogger = new Logger('Player-' + socket.id)
+    plogger.debug('Player-specific logger created')
+    plogger.debug('Waiting for player join event')
     socket.on('join', (username) => {
-        socket.emit('ready', socket.id);
+	plogger.info('Join request with username ' + username);
+
         let angle = 2 * Math.random() * Math.PI;
         let pos = {
             x: Math.cos(angle) * 1300 / SCALE,
@@ -87,8 +124,14 @@ io.sockets.on('connection', (socket) => {
         let mouseDesc = rapier.ColliderDesc.cuboid(0.1, 0.1)
             .setTranslation(0, 0)
             .setSensor(true);
+<<<<<<< HEAD
         let mouse = world.createCollider(mouseDesc)
 
+=======
+        let mouse = world.createCollider(mouseDesc);
+	plogger.debug('Created player object in world');
+        
+>>>>>>> 437a524e07c5286e82969398a56555338a577ea4
         mouse.module = 0
         mouse.button = 0
         players[socket.id] = player;
@@ -99,9 +142,16 @@ io.sockets.on('connection', (socket) => {
         players[socket.id].left = {exists:true,hasModule:false};
 
         usernames[socket.id] = username;
+	plogger.debug('Player registered');
+
+	plogger.info('PlayerJoinEvent finished for player ' + socket.id);
+	socket.emit('ready', socket.id);
+	plogger.debug('Sent ServerReady message');
     });
     socket.on('message', (text, username) => {
+	plogger.info('PlayerChatMessage recieved: ' + username + ': ' + text);
         io.emit('message', text, username);
+	plogger.debug('Broadcasted message');
     });
     socket.on('input', (keys, mouse={x:0,y:0},buttons) => {
         if (keys == undefined) return;
@@ -115,9 +165,11 @@ io.sockets.on('connection', (socket) => {
         mouses[socket.id].button = buttons;
     });
     socket.on('disconnect', () => {
+	plogger.info('PlayerDisconnectevent triggered. Removing player...')
         io.emit('message', usernames[socket.id] + "left the game", "Server");
+	plogger.debug('Sent player left chat message');
         if(players[socket.id] == null) {
-            console.log("Player already disconnected");
+            plogger.warn('Player already disconnected');
             return;
         }
         world.removeRigidBody(players[socket.id]);
@@ -125,8 +177,11 @@ io.sockets.on('connection', (socket) => {
         delete mousePos[socket.id];
         delete players[socket.id];
         delete usernames[socket.id];
+	plogger.info('PlayerDisconnectEvent finished for player');
+	delete plogger;
     });
 });
+logger.info('Created main callback')
 
 function gameLoop() {
     const intervalId = setInterval(() => {
@@ -388,7 +443,13 @@ function gameLoop() {
     }, 2000);
 }
 
+logger.info('Server fully online and ready for players');
+ready_time = Date.now() / 1000
+logger.info(`Server startup completed in ${ready_time - start_time} seconds`);
+
 process.on('SIGTERM', () => {
-    io.sockets.disconnect()
-    process.exit(0)
+    logger.info('Recieved SIGTERM, gracefully exiting...');
+    io.sockets.disconnect();
+    logger.debug('Sent all players disconnect');
+    process.exit(0);
 })
