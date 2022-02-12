@@ -17,9 +17,8 @@
   },
   "homepage": "https://github.com/StarKingdoms/starkingdoms-server#readme",
   "dependencies": {
-    "@dimforge/rapier2d": "^0.7.6",
+    "@c0repwn3r/rapier2d-node": "^0.7.6",
     "express": "^4.17.1",
-    "rapier2d-node": "^0.7.7",
     "socket.io": "^4.4.0"
   }
 }
