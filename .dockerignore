@@ -1,0 +1,8 @@
+.git
+.github
+.gitignore
+node_modules
+npm-debug.log
+Dockerfile*
+docker-compose*
+readme.md
