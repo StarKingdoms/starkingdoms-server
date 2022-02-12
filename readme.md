@@ -1,1 +1,1 @@
-[![StarKingdoms](https://circleci.com/gh/StarKingdoms/starkingdoms-server.svg?style=svg)](https://circleci.com/gh/StarKingdoms/starkingdoms-server)
+[![StarKingdoms](https://img.shields.io/github/workflow/status/starkingdoms/starkingdoms-server/docker-build)
