@@ -6,8 +6,8 @@ const app = express();
 const http = require('http');
 const { Server } = require("socket.io");
 const core_server_util = require("./core_server_util.js");
-const rapier = require('rapier2d-node');
 const util = require('./util.js');
+const rapier = require('@c0repwn3r/rapier2d-node');
 const { Logger } = require("./logging.js");
 
 const STKVERSION = 'alpha-1.0.0';
@@ -25,6 +25,7 @@ logger.info('Initializing server io');
 let io = core_server_util.get_io();
 logger.info('Server is now listening for packets');
 
+// start game code
 logger.debug('Creating engine variables');
 /*
  * Variable setup
@@ -66,6 +67,8 @@ logger.info('Started gameloop');
 
 logger.debug('Creating callback functions');
 
+gameLoop();
+
 function rotateVector(v, angle) {
     let newVector = { x: v.x*Math.cos(angle) - v.y*Math.sin(angle),
         y: v.x*Math.sin(angle) + v.y*Math.cos(angle)};
@@ -100,7 +103,7 @@ io.sockets.on('connection', (socket) => {
     plogger.debug('Player-specific logger created')
     plogger.debug('Waiting for player join event')
     socket.on('join', (username) => {
-	plogger.info('Join request with username ' + username);
+        plogger.info('Join request with username ' + username);
 
         let angle = 2 * Math.random() * Math.PI;
         let pos = {
@@ -116,28 +119,28 @@ io.sockets.on('connection', (socket) => {
             .setTranslation(0, 0)
             .setSensor(true);
         let mouse = world.createCollider(mouseDesc);
-	plogger.debug('Created player object in world');
-        
+        plogger.debug('Created player object in world');
+
         mouse.module = 0
         mouse.button = 0
         players[socket.id] = player;
         mouses[socket.id] = mouse;
-        players[socket.id].up = {exists:true};
-        players[socket.id].down = {exists:true};
-        players[socket.id].right = {exists:true};
-        players[socket.id].left = {exists:true};
+        players[socket.id].up = {exists:true,hasModule:false};
+        players[socket.id].down = {exists:true,hasModule:false};
+        players[socket.id].right = {exists:true,hasModule:false};
+        players[socket.id].left = {exists:true,hasModule:false};
 
         usernames[socket.id] = username;
-	plogger.debug('Player registered');
+        plogger.debug('Player registered');
 
-	plogger.info('PlayerJoinEvent finished for player ' + socket.id);
-	socket.emit('ready', socket.id);
-	plogger.debug('Sent ServerReady message');
+        plogger.info('PlayerJoinEvent finished for player ' + socket.id);
+        socket.emit('ready', socket.id);
+        plogger.debug('Sent ServerReady message');
     });
     socket.on('message', (text, username) => {
-	plogger.info('PlayerChatMessage recieved: ' + username + ': ' + text);
+        plogger.info('PlayerChatMessage recieved: ' + username + ': ' + text);
         io.emit('message', text, username);
-	plogger.debug('Broadcasted message');
+        plogger.debug('Broadcasted message');
     });
     socket.on('input', (keys, mouse={x:0,y:0},buttons) => {
         if (keys == undefined) return;
@@ -151,9 +154,9 @@ io.sockets.on('connection', (socket) => {
         mouses[socket.id].button = buttons;
     });
     socket.on('disconnect', () => {
-	plogger.info('PlayerDisconnectevent triggered. Removing player...')
+        plogger.info('PlayerDisconnectevent triggered. Removing player...')
         io.emit('message', usernames[socket.id] + "left the game", "Server");
-	plogger.debug('Sent player left chat message');
+        plogger.debug('Sent player left chat message');
         if(players[socket.id] == null) {
             plogger.warn('Player already disconnected');
             return;
@@ -163,8 +166,8 @@ io.sockets.on('connection', (socket) => {
         delete mousePos[socket.id];
         delete players[socket.id];
         delete usernames[socket.id];
-	plogger.info('PlayerDisconnectEvent finished for player');
-	delete plogger;
+        plogger.info('PlayerDisconnectEvent finished for player');
+        delete plogger;
     });
 });
 logger.info('Created main callback')
@@ -191,17 +194,17 @@ function gameLoop() {
         for(let key of Object.keys(mouses)) {
             world.intersectionsWith(mouses[key].handle, (collider_handle) => {
                 handle = world.getCollider(collider_handle).parent()
-                    for(let i=0; i < modules.length; i++) {
-                        if(handle === modules[i].handle && mouses[key].module == 0 &&
-                            mouses[key].button == 1) {
-                            modules[i].setDominanceGroup(-127);
-                            moduleGrab[i].grabbed = 1;
-                            moduleGrab[i].mouse = key;
-                            mouses[key].module = 1;
-                            return false;
-                        }
+                for(let i=0; i < modules.length; i++) {
+                    if(handle === modules[i].handle && mouses[key].module == 0 &&
+                        mouses[key].button == 1) {
+                        modules[i].setDominanceGroup(-127);
+                        moduleGrab[i].grabbed = 1;
+                        moduleGrab[i].mouse = key;
+                        mouses[key].module = 1;
+                        return false;
                     }
-                    return true;
+                }
+                return true;
             });
             if(mouses[key].button == 0) {
                 mouses[key].module = 0;
@@ -213,6 +216,30 @@ function gameLoop() {
                         modules[i].setAngvel(0, true);
                         moduleGrab[i].grabbed = 0;
                         moduleGrab[i].mouse = 0;
+                        if(players[key].down.hasModule) {
+                            let params = rapier.JointParams.fixed({x:0,y:50/SCALE},
+                                0, {x:0,y:0},Math.PI);
+                            let joint = world.createJoint(params,
+                                players[key],modules[i]);
+                        }
+                        if(players[key].up.hasModule) {
+                            let params = rapier.JointParams.fixed({x:0,y:-50/SCALE},
+                                0, {x:0,y:0},0);
+                            let joint = world.createJoint(params,
+                                players[key],modules[i]);
+                        }
+                        if(players[key].right.hasModule) {
+                            let params = rapier.JointParams.fixed({x:50/SCALE,y:0},
+                                0, {x:0,y:0},-Math.PI/2);
+                            let joint = world.createJoint(params,
+                                players[key],modules[i]);
+                        }
+                        if(players[key].left.hasModule) {
+                            let params = rapier.JointParams.fixed({x:-50/SCALE,y:0},
+                                0, {x:0,y:0},Math.PI/2);
+                            let joint = world.createJoint(params,
+                                players[key],modules[i]);
+                        }
                     }
                 }
             }
@@ -221,6 +248,7 @@ function gameLoop() {
         for(let key of Object.keys(players)) {
             for(let i=0; i < modules.length; i++) {
                 if(moduleGrab[i].grabbed != 0) {
+                    let verified = false;
                     if(players[key].down.exists) {
                         let downVector = {x: 0, y: 25 / SCALE};
                         let mouseVector = {
@@ -238,6 +266,11 @@ function gameLoop() {
                             };
                             modules[i].setTranslation(position);
                             modules[i].setRotation(players[key].rotation() + Math.PI);
+                            players[key].down.hasModule = true;
+                            players[key].right.hasModule = false;
+                            players[key].up.hasModule = false;
+                            players[key].left.hasModule = false;
+                            verified = true;
                         }
                     }
                     if(players[key].right.exists) {
@@ -257,6 +290,11 @@ function gameLoop() {
                             };
                             modules[i].setTranslation(position);
                             modules[i].setRotation(players[key].rotation() + Math.PI / 2);
+                            players[key].down.hasModule = false;
+                            players[key].right.hasModule = true;
+                            players[key].up.hasModule = false;
+                            players[key].left.hasModule = false;
+                            verified = true;
                         }
                     }
                     if(players[key].left.exists) {
@@ -276,6 +314,11 @@ function gameLoop() {
                             };
                             modules[i].setTranslation(position);
                             modules[i].setRotation(players[key].rotation() - Math.PI / 2);
+                            players[key].down.hasModule = false;
+                            players[key].right.hasModule = false;
+                            players[key].up.hasModule = false;
+                            players[key].left.hasModule = true;
+                            verified = true;
                         }
                     }
                     if(players[key].up.exists) {
@@ -295,13 +338,24 @@ function gameLoop() {
                             };
                             modules[i].setTranslation(position);
                             modules[i].setRotation(players[key].rotation());
+                            players[key].down.hasModule = false;
+                            players[key].right.hasModule = false;
+                            players[key].up.hasModule = true;
+                            players[key].left.hasModule = false;
+                            verified = true;
                         }
+                    }
+                    if(verified == false) {
+                        players[key].down.hasModule = false;
+                        players[key].right.hasModule = false;
+                        players[key].up.hasModule = false;
+                        players[key].left.hasModule = false;
                     }
                 }
             }
         }
 
-        
+
         playerVitals = {};
         for (let key of Object.keys(players)) {
             if(players[key].rotation() > 1000 || players[key].rotation() < -1000) {
