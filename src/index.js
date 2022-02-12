@@ -94,7 +94,10 @@ io.sockets.on('connection', (socket) => {
         mouse.button = 0
         players[socket.id] = player;
         mouses[socket.id] = mouse;
-        players[socket.id].up = {exists:true,vector:{x:0,y:1}};
+        players[socket.id].up = {exists:true};
+        players[socket.id].down = {exists:true};
+        players[socket.id].right = {exists:true};
+        players[socket.id].left = {exists:true};
 
         usernames[socket.id] = username;
     });
@@ -178,20 +181,71 @@ function gameLoop() {
         for(let key of Object.keys(players)) {
             for(let i=0; i < modules.length; i++) {
                 if(moduleGrab[i].grabbed != 0) {
-                    if(players[key].up.exists) {
-                        let upVector = {x: 0, y: -25 / SCALE};
+                    if(players[key].down.exists) {
                         let downVector = {x: 0, y: 25 / SCALE};
+                        let mouseVector = {
+                            x: mouses[key].translation().x - players[key].translation().x,
+                            y: mouses[key].translation().y - players[key].translation().y,
+                        };
+                        mouseVector = rotateVector(mouseVector, -players[key].rotation());
+                        let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
+                        if(downDist < 2) {
+                            let position = {x: 0, y: 50 / SCALE};
+                            position = rotateVector(position, players[key].rotation());
+                            position = {
+                                x: position.x + players[key].translation().x,
+                                y: position.y + players[key].translation().y
+                            };
+                            modules[i].setTranslation(position);
+                            modules[i].setRotation(players[key].rotation() + Math.PI);
+                        }
+                    }
+                    if(players[key].right.exists) {
                         let rightVector = {x: 25 / SCALE, y: 0};
+                        let mouseVector = {
+                            x: mouses[key].translation().x - players[key].translation().x,
+                            y: mouses[key].translation().y - players[key].translation().y,
+                        };
+                        mouseVector = rotateVector(mouseVector, -players[key].rotation());
+                        let rightDist = Math.abs(mouseVector.x-rightVector.x)+Math.abs(mouseVector.y-rightVector.y);
+                        if(rightDist < 2) {
+                            let position = {x: 50 / SCALE, y: 0};
+                            position = rotateVector(position, players[key].rotation());
+                            position = {
+                                x: position.x + players[key].translation().x,
+                                y: position.y + players[key].translation().y
+                            };
+                            modules[i].setTranslation(position);
+                            modules[i].setRotation(players[key].rotation() + Math.PI / 2);
+                        }
+                    }
+                    if(players[key].left.exists) {
                         let leftVector = {x: -25 / SCALE, y: 0};
                         let mouseVector = {
                             x: mouses[key].translation().x - players[key].translation().x,
                             y: mouses[key].translation().y - players[key].translation().y,
                         };
                         mouseVector = rotateVector(mouseVector, -players[key].rotation());
-                        let upDist = Math.abs(mouseVector.x-upVector.x)+Math.abs(mouseVector.y-upVector.y);
-                        let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
-                        let rightDist = Math.abs(mouseVector.x-rightVector.x)+Math.abs(mouseVector.y-rightVector.y);
                         let leftDist = Math.abs(mouseVector.x-leftVector.x)+Math.abs(mouseVector.y-leftVector.y);
+                        if(leftDist < 2) {
+                            let position = {x: -50 / SCALE, y: 0};
+                            position = rotateVector(position, players[key].rotation());
+                            position = {
+                                x: position.x + players[key].translation().x,
+                                y: position.y + players[key].translation().y
+                            };
+                            modules[i].setTranslation(position);
+                            modules[i].setRotation(players[key].rotation() - Math.PI / 2);
+                        }
+                    }
+                    if(players[key].up.exists) {
+                        let upVector = {x: 0, y: -25 / SCALE};
+                        let mouseVector = {
+                            x: mouses[key].translation().x - players[key].translation().x,
+                            y: mouses[key].translation().y - players[key].translation().y,
+                        };
+                        mouseVector = rotateVector(mouseVector, -players[key].rotation());
+                        let upDist = Math.abs(mouseVector.x-upVector.x)+Math.abs(mouseVector.y-upVector.y);
                         if(upDist < 2) {
                             let position = {x: 0, y: -50 / SCALE};
                             position = rotateVector(position, players[key].rotation());
@@ -201,33 +255,6 @@ function gameLoop() {
                             };
                             modules[i].setTranslation(position);
                             modules[i].setRotation(players[key].rotation());
-                        } else if(downDist < 2) {
-                            let position = {x: 0, y: 50 / SCALE};
-                            position = rotateVector(position, players[key].rotation());
-                            position = {
-                                x: position.x + players[key].translation().x,
-                                y: position.y + players[key].translation().y
-                            };
-                            modules[i].setTranslation(position);
-                            modules[i].setRotation(players[key].rotation() + Math.PI);
-                        } else if(rightDist < 2) {
-                            let position = {x: 50 / SCALE, y: 0};
-                            position = rotateVector(position, players[key].rotation());
-                            position = {
-                                x: position.x + players[key].translation().x,
-                                y: position.y + players[key].translation().y
-                            };
-                            modules[i].setTranslation(position);
-                            modules[i].setRotation(players[key].rotation() + Math.PI / 2);
-                        } else if(leftDist < 2) {
-                            let position = {x: -50 / SCALE, y: 0};
-                            position = rotateVector(position, players[key].rotation());
-                            position = {
-                                x: position.x + players[key].translation().x,
-                                y: position.y + players[key].translation().y
-                            };
-                            modules[i].setTranslation(position);
-                            modules[i].setRotation(players[key].rotation() - Math.PI / 2);
                         }
                     }
                 }
