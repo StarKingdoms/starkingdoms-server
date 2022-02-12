@@ -8,8 +8,6 @@ const util = require('./util.js');
 
 let io = core_server_util.get_io();
 
-gameLoop();
-
 // start game code
 let world = new rapier.World({x:0.0,y:0.0});
 world.maxPositionIterations = 8;
@@ -42,6 +40,8 @@ let moon = world.createRigidBody(moonDesc)
 let moonCollider = world.createCollider(moonColliderDesc, moon.handle);
 
 console.log(world.timestep);
+
+gameLoop();
 
 function rotateVector(v, angle) {
     let newVector = { x: v.x*Math.cos(angle) - v.y*Math.sin(angle),
