@@ -89,15 +89,14 @@ io.sockets.on('connection', (socket) => {
             .setTranslation(0, 0)
             .setSensor(true);
         let mouse = world.createCollider(mouseDesc)
-        let moduleDetector = new rapier.Ball(40/SCALE);
         
         mouse.module = 0
         mouse.button = 0
         players[socket.id] = player;
         mouses[socket.id] = mouse;
+        players[socket.id].up = {exists:true,vector:{x:0,y:1}};
 
         usernames[socket.id] = username;
-        moduleDetectors[socket.id] = moduleDetector;
     });
     socket.on('message', (text, username) => {
         io.emit('message', text, username);
@@ -147,13 +146,13 @@ function gameLoop() {
         }
 
         for(let key of Object.keys(mouses)) {
-            world.intersectionsWith(mouses[key].handle, (handle) => {
+            world.intersectionsWith(mouses[key].handle, (collider_handle) => {
+                handle = world.getCollider(collider_handle).parent()
                     for(let i=0; i < modules.length; i++) {
                         if(handle === modules[i].handle && mouses[key].module == 0 &&
                             mouses[key].button == 1) {
                             modules[i].setDominanceGroup(-127);
                             moduleGrab[i].grabbed = 1;
-                            console.log("Hello from Narnia")
                             moduleGrab[i].mouse = key;
                             mouses[key].module = 1;
                             return false;
@@ -176,22 +175,63 @@ function gameLoop() {
             }
         }
 
-        for(let key of Object.keys(moduleDetectors)) {
-            world.intersectionsWithShape(players[key].translation(), 0,
-                moduleDetectors[key], 0xFFFFFFFF, (handle) => {
-                for(let i=0; i < modules.length; i++) {
-                    if(handle === modules[i].handle && moduleGrab[i].grabbed != 0) {
-                        let offset = {x:0, y: 5};
-                        offset = rotateVector(offset, players[key].rotation());
-                        let newPos = {
-                            x: players[key].translation().x+offset.x,
-                            y: players[key].translation().y+offset.y,
+        for(let key of Object.keys(players)) {
+            for(let i=0; i < modules.length; i++) {
+                if(moduleGrab[i].grabbed != 0) {
+                    if(players[key].up.exists) {
+                        let upVector = {x: 0, y: -25 / SCALE};
+                        let downVector = {x: 0, y: 25 / SCALE};
+                        let rightVector = {x: 25 / SCALE, y: 0};
+                        let leftVector = {x: -25 / SCALE, y: 0};
+                        let mouseVector = {
+                            x: mouses[key].translation().x - players[key].translation().x,
+                            y: mouses[key].translation().y - players[key].translation().y,
+                        };
+                        mouseVector = rotateVector(mouseVector, -players[key].rotation());
+                        let upDist = Math.abs(mouseVector.x-upVector.x)+Math.abs(mouseVector.y-upVector.y);
+                        let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
+                        let rightDist = Math.abs(mouseVector.x-rightVector.x)+Math.abs(mouseVector.y-rightVector.y);
+                        let leftDist = Math.abs(mouseVector.x-leftVector.x)+Math.abs(mouseVector.y-leftVector.y);
+                        if(upDist < 2) {
+                            let position = {x: 0, y: -50 / SCALE};
+                            position = rotateVector(position, players[key].rotation());
+                            position = {
+                                x: position.x + players[key].translation().x,
+                                y: position.y + players[key].translation().y
+                            };
+                            modules[i].setTranslation(position);
+                            modules[i].setRotation(players[key].rotation());
+                        } else if(downDist < 2) {
+                            let position = {x: 0, y: 50 / SCALE};
+                            position = rotateVector(position, players[key].rotation());
+                            position = {
+                                x: position.x + players[key].translation().x,
+                                y: position.y + players[key].translation().y
+                            };
+                            modules[i].setTranslation(position);
+                            modules[i].setRotation(players[key].rotation() + Math.PI);
+                        } else if(rightDist < 2) {
+                            let position = {x: 50 / SCALE, y: 0};
+                            position = rotateVector(position, players[key].rotation());
+                            position = {
+                                x: position.x + players[key].translation().x,
+                                y: position.y + players[key].translation().y
+                            };
+                            modules[i].setTranslation(position);
+                            modules[i].setRotation(players[key].rotation() + Math.PI / 2);
+                        } else if(leftDist < 2) {
+                            let position = {x: -50 / SCALE, y: 0};
+                            position = rotateVector(position, players[key].rotation());
+                            position = {
+                                x: position.x + players[key].translation().x,
+                                y: position.y + players[key].translation().y
+                            };
+                            modules[i].setTranslation(position);
+                            modules[i].setRotation(players[key].rotation() - Math.PI / 2);
                         }
-                        modules[i].wakeUp();
-                        modules[i].setTranslation(newPos, true);
                     }
                 }
-            });
+            }
         }
 
         
