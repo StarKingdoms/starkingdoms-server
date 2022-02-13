@@ -407,9 +407,16 @@ function gameLoop() {
         }
         for (let key of Object.keys(players)) {
 
-            io.to(key).emit('planet-pos', planets);
-            io.to(key).emit('client-pos', playerVitals, playerVitals[key], usernames);
-            io.to(key).emit('module-pos', moduleVitals);
+            var gameFrame = {
+                planets: planets,
+                players: {
+                    thisPlayer: playerVitals[key],
+                    allPlayers: playerVitals,
+                    usernames: usernames
+                },
+                modules: moduleVitals
+            };
+            io.to(key).emit('data', gameFrame);
         }
     }, 1000/240);
     const intervalId2 = setInterval(() => {
