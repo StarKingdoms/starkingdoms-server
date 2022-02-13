@@ -22,3 +22,5 @@ exports.PORT = 8443;
 exports.DEVELOPMENT_MODE = false;
 // False = starkingdoms.tk server settings
 // True = localhost server settings
+
+exports.PROD_OVERRIDE = '/etc/apache2/PROD';
