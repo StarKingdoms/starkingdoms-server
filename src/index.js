@@ -67,8 +67,6 @@ logger.info('Started gameloop');
 
 logger.debug('Creating callback functions');
 
-gameLoop();
-
 function rotateVector(v, angle) {
     let newVector = { x: v.x*Math.cos(angle) - v.y*Math.sin(angle),
         y: v.x*Math.sin(angle) + v.y*Math.cos(angle)};
