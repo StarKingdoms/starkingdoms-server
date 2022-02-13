@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const socketio = require('socket.io');
 const { Logger } = require('./logging.js');
+const fs = require('fs');
 
 logger = new Logger('IOManager');
 logger.info('IOManager ready');
@@ -31,7 +32,6 @@ function get_io() {
 	} else {
 		logger.info('Creating IOContextSSL');
 		const https = require('https');
-		const fs = require('fs');
 		// enable prod secure server on starkingdoms.tk
 
 		let server = https.createServer({
