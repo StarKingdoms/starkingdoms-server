@@ -123,10 +123,10 @@ io.sockets.on('connection', (socket) => {
         mouse.button = 0
         players[socket.id] = player;
         mouses[socket.id] = mouse;
-        players[socket.id].up = {exists:true,hasModule:false};
-        players[socket.id].down = {exists:true,hasModule:false};
-        players[socket.id].right = {exists:true,hasModule:false};
-        players[socket.id].left = {exists:true,hasModule:false};
+        players[socket.id].up = {exists:true,joint:null,hasModule:false};
+        players[socket.id].down = {exists:true,joint:null,hasModule:false};
+        players[socket.id].right = {exists:true,joint:null,hasModule:false};
+        players[socket.id].left = {exists:true,joint:null,hasModule:false};
 
         usernames[socket.id] = username;
         plogger.debug('Player registered');
@@ -199,6 +199,26 @@ function gameLoop() {
                         moduleGrab[i].grabbed = 1;
                         moduleGrab[i].mouse = key;
                         mouses[key].module = 1;
+                        if(players[key].down.joint != null) {
+                            var joint = players[key].down.joint;
+                            world.removeJoint(joint, true);
+                            players[key].down.joint = null;
+                        }
+                        if(players[key].up.joint != null) {
+                            var joint = players[key].up.joint;
+                            world.removeJoint(joint, true);
+                            players[key].up.joint = null;
+                        }
+                        if(players[key].right.joint != null) {
+                            var joint = players[key].right.joint;
+                            world.removeJoint(joint, true);
+                            players[key].right.joint = null;
+                        }
+                        if(players[key].left.joint != null) {
+                            var joint = players[key].left.joint;
+                            world.removeJoint(joint, true);
+                            players[key].left.joint = null;
+                        }
                         return false;
                     }
                 }
@@ -219,24 +239,28 @@ function gameLoop() {
                                 0, {x:0,y:0},Math.PI);
                             let joint = world.createJoint(params,
                                 players[key],modules[i]);
+                            players[key].down.joint = joint;
                         }
                         if(players[key].up.hasModule) {
                             let params = rapier.JointParams.fixed({x:0,y:-50/SCALE},
                                 0, {x:0,y:0},0);
                             let joint = world.createJoint(params,
                                 players[key],modules[i]);
+                            players[key].up.joint = joint;
                         }
                         if(players[key].right.hasModule) {
                             let params = rapier.JointParams.fixed({x:50/SCALE,y:0},
                                 0, {x:0,y:0},-Math.PI/2);
                             let joint = world.createJoint(params,
                                 players[key],modules[i]);
+                            players[key].right.joint = joint;
                         }
                         if(players[key].left.hasModule) {
                             let params = rapier.JointParams.fixed({x:-50/SCALE,y:0},
                                 0, {x:0,y:0},Math.PI/2);
                             let joint = world.createJoint(params,
                                 players[key],modules[i]);
+                            players[key].left.joint = joint;
                         }
                     }
                 }
