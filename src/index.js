@@ -7,6 +7,7 @@ const http = require('http');
 const { Server } = require("socket.io");
 const core_server_util = require("./core_server_util.js");
 const util = require('./util.js');
+const { modifyHub } = require('./modules.js');
 const rapier = require('@c0repwn3r/rapier2d-node');
 const { Logger } = require("./logging.js");
 
@@ -201,23 +202,39 @@ function gameLoop() {
                         mouses[key].module = 1;
                         if(players[key].down.joint != null) {
                             var joint = players[key].down.joint;
-                            world.removeJoint(joint, true);
-                            players[key].down.joint = null;
+                            if(joint.bodyHandle2() === handle) {
+                                world.removeJoint(joint, true);
+                                players[key].down.joint = null;
+                            }
+                            modules[i].base.hasModule = false;
+                            players[key].down.exists = true;
                         }
                         if(players[key].up.joint != null) {
                             var joint = players[key].up.joint;
-                            world.removeJoint(joint, true);
-                            players[key].up.joint = null;
+                            if(joint.bodyHandle2() === handle) {
+                                world.removeJoint(joint, true);
+                                players[key].up.joint = null;
+                            }
+                            modules[i].base.hasModule = false;
+                            players[key].up.exists = true;
                         }
                         if(players[key].right.joint != null) {
                             var joint = players[key].right.joint;
-                            world.removeJoint(joint, true);
-                            players[key].right.joint = null;
+                            if(joint.bodyHandle2() === handle) {
+                                world.removeJoint(joint, true);
+                                players[key].right.joint = null;
+                            }
+                            modules[i].base.hasModule = false;
+                            players[key].right.exists = true;
                         }
                         if(players[key].left.joint != null) {
                             var joint = players[key].left.joint;
-                            world.removeJoint(joint, true);
-                            players[key].left.joint = null;
+                            if(joint.bodyHandle2() === handle) {
+                                world.removeJoint(joint, true);
+                                players[key].left.joint = null;
+                            }
+                            modules[i].base.hasModule = false;
+                            players[key].left.exists = true;
                         }
                         return false;
                     }
@@ -240,6 +257,8 @@ function gameLoop() {
                             let joint = world.createJoint(params,
                                 players[key],modules[i]);
                             players[key].down.joint = joint;
+                            players[key].down.exists = false;
+                            modules[i].base.hasModule = true;
                         }
                         if(players[key].up.hasModule) {
                             let params = rapier.JointParams.fixed({x:0,y:-50/SCALE},
@@ -247,6 +266,8 @@ function gameLoop() {
                             let joint = world.createJoint(params,
                                 players[key],modules[i]);
                             players[key].up.joint = joint;
+                            players[key].up.exists = false;
+                            modules[i].base.hasModule = true;
                         }
                         if(players[key].right.hasModule) {
                             let params = rapier.JointParams.fixed({x:50/SCALE,y:0},
@@ -254,6 +275,8 @@ function gameLoop() {
                             let joint = world.createJoint(params,
                                 players[key],modules[i]);
                             players[key].right.joint = joint;
+                            players[key].right.exists = false;
+                            modules[i].base.hasModule = true;
                         }
                         if(players[key].left.hasModule) {
                             let params = rapier.JointParams.fixed({x:-50/SCALE,y:0},
@@ -261,17 +284,35 @@ function gameLoop() {
                             let joint = world.createJoint(params,
                                 players[key],modules[i]);
                             players[key].left.joint = joint;
+                            players[key].left.exists = false;
+                            modules[i].base.hasModule = true;
+                        }
+                        for(let j = 0; j < modules.length; j++) {
+                            console.log(modules[i].left.hasModule);
+                            if(modules[i].left.hasModule){
+                                console.log("bloop");
+                                if(modules[j].shouldAttach == key) {
+                                let params = rapier.JointParams.fixed({x:-50/SCALE,y:0},
+                                    0, {x:0,y:0},Math.PI/2);
+                                let joint = world.createJoint(params,
+                                    modules[i],modules[j]);
+                                modules[i].left.joint = joint;
+                                modules[i].left.exists = false;
+                                modules[j].base.hasModule = true;
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
+
         for(let key of Object.keys(players)) {
-            for(let i=0; i < modules.length; i++) {
-                if(moduleGrab[i].grabbed != 0) {
+            for(let i = 0; i < modules.length; i++) {
+                if(moduleGrab[i].grabbed == true) {
                     let verified = false;
-                    if(players[key].down.exists) {
+                    if(players[key].down.joint == null) {
                         let downVector = {x: 0, y: 25 / SCALE};
                         let mouseVector = {
                             x: mouses[key].translation().x - players[key].translation().x,
@@ -295,7 +336,7 @@ function gameLoop() {
                             verified = true;
                         }
                     }
-                    if(players[key].right.exists) {
+                    if(players[key].right.joint == null) {
                         let rightVector = {x: 25 / SCALE, y: 0};
                         let mouseVector = {
                             x: mouses[key].translation().x - players[key].translation().x,
@@ -319,7 +360,7 @@ function gameLoop() {
                             verified = true;
                         }
                     }
-                    if(players[key].left.exists) {
+                    if(players[key].left.joint == null) {
                         let leftVector = {x: -25 / SCALE, y: 0};
                         let mouseVector = {
                             x: mouses[key].translation().x - players[key].translation().x,
@@ -343,7 +384,7 @@ function gameLoop() {
                             verified = true;
                         }
                     }
-                    if(players[key].up.exists) {
+                    if(players[key].up.joint == null) {
                         let upVector = {x: 0, y: -25 / SCALE};
                         let mouseVector = {
                             x: mouses[key].translation().x - players[key].translation().x,
@@ -372,6 +413,102 @@ function gameLoop() {
                         players[key].right.hasModule = false;
                         players[key].up.hasModule = false;
                         players[key].left.hasModule = false;
+                    }
+                }
+                for(let j = 0; j < modules.length; j++) {
+                    if(moduleGrab[j].grabbed) {
+                        let verified = false;
+                        if(modules[i].right.joint == null && i != j && modules[i].base.hasModule) {
+                            let downVector = {x: 25 / SCALE, y: 0};
+                            let mouseVector = {
+                                x: mouses[key].translation().x - modules[i].translation().x,
+                                y: mouses[key].translation().y - modules[i].translation().y,
+                            };
+                            mouseVector = rotateVector(mouseVector, -modules[i].rotation());
+                            let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
+                            if(downDist < 2) {
+                                let position = {x: 50 / SCALE, y: 0};
+                                position = rotateVector(position, modules[i].rotation());
+                                position = {
+                                    x: position.x + modules[i].translation().x,
+                                    y: position.y + modules[i].translation().y
+                                };
+                                modules[j].setTranslation(position);
+                                modules[j].setRotation(modules[i].rotation() + Math.PI / 2);
+                                modules[i].right.hasModule = true;
+                                if(modules[i].down.exists) {
+                                    modules[i].down.hasModule = false;
+                                }
+                                if(modules[i].left.exists) {
+                                    modules[i].left.hasModule = false;
+                                }
+                                modules[j].shouldAttach = key;
+                                verified = true;
+                            }
+                        }
+                        if(modules[i].left.joint == null && i != j && modules[i].base.hasModule) {
+                            let downVector = {x: -25 / SCALE, y: 0};
+                            let mouseVector = {
+                                x: mouses[key].translation().x - modules[i].translation().x,
+                                y: mouses[key].translation().y - modules[i].translation().y,
+                            };
+                            mouseVector = rotateVector(mouseVector, -modules[i].rotation());
+                            let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
+                            if(downDist < 2) {
+                                let position = {x: -50 / SCALE, y: 0};
+                                position = rotateVector(position, modules[i].rotation());
+                                position = {
+                                    x: position.x + modules[i].translation().x,
+                                    y: position.y + modules[i].translation().y
+                                };
+                                modules[j].setTranslation(position);
+                                modules[j].setRotation(modules[i].rotation() - Math.PI / 2);
+                                if(modules[i].right.exists) {
+                                    modules[i].right.hasModule = false;
+                                }
+                                if(modules[i].down.exists) {
+                                    modules[i].down.hasModule = false;
+                                }
+                                modules[i].left.hasModule = true;
+                                modules[j].shouldAttach = key;
+                                verified = true;
+                            }
+                        }
+                        if(modules[i].down.joint == null && i != j && modules[i].base.hasModule) {
+                            let downVector = {x: 0, y: -25 / SCALE};
+                            let mouseVector = {
+                                x: mouses[key].translation().x - modules[i].translation().x,
+                                y: mouses[key].translation().y - modules[i].translation().y,
+                            };
+                            mouseVector = rotateVector(mouseVector, -modules[i].rotation());
+                            let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
+                            if(downDist < 2) {
+                                let position = {x: 0, y: -50 / SCALE};
+                                position = rotateVector(position, modules[i].rotation());
+                                position = {
+                                    x: position.x + modules[i].translation().x,
+                                    y: position.y + modules[i].translation().y
+                                };
+                                modules[j].setTranslation(position);
+                                modules[j].setRotation(modules[i].rotation());
+                                if(modules[i].right.exists) {
+                                    modules[i].right.hasModule = false;
+                                }
+                                modules[i].down.hasModule = true;
+                                if(modules[i].left.exists) {
+                                    modules[i].left.hasModule = false;
+                                }
+                                modules[j].shouldAttach = key;
+                                verified = true;
+                            }
+                        }
+                        if(verified == false) {
+                            modules[i].down.hasModule = false;
+                            modules[i].right.hasModule = false;
+                            modules[i].left.hasModule = false;
+                            modules[j].shouldAttach = null;
+                        }
+                        console.log(modules[i].left.hasModule);
                     }
                 }
             }
@@ -418,7 +555,8 @@ function gameLoop() {
                 x: modules[i].translation().x * SCALE,
                 y: modules[i].translation().y * SCALE,
                 rotation: modules[i].rotation(),
-                mass: modules[i].mass * SCALE
+                mass: modules[i].mass * SCALE,
+                type: modules[i].type
             };
             let earthForce = util.calcGravity(1/60, moduleVitals[i], planets.earth, SCALE);
             let moonForce = util.calcGravity(1/60, moduleVitals[i], planets.moon, SCALE);
@@ -455,6 +593,7 @@ function gameLoop() {
             let moduleColliderDesc = rapier.ColliderDesc.cuboid(25/SCALE, 25/SCALE);
             let module = world.createRigidBody(moduleDesc)
             let moduleCollider = world.createCollider(moduleColliderDesc, module.handle);
+            module = modifyHub(module);
             modules.push(module);
             moduleGrab.push({grabbed:0,mouse:null});
         }
