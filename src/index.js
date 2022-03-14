@@ -288,9 +288,7 @@ function gameLoop() {
                             modules[i].base.hasModule = true;
                         }
                         for(let j = 0; j < modules.length; j++) {
-                            console.log(modules[i].left.hasModule);
                             if(modules[i].left.hasModule){
-                                console.log("bloop");
                                 if(modules[j].shouldAttach == key) {
                                 let params = rapier.JointParams.fixed({x:-50/SCALE,y:0},
                                     0, {x:0,y:0},Math.PI/2);
@@ -298,6 +296,18 @@ function gameLoop() {
                                     modules[i],modules[j]);
                                 modules[i].left.joint = joint;
                                 modules[i].left.exists = false;
+                                modules[j].base.hasModule = true;
+                                }
+                            }
+                            if(modules[i].down.hasModule){
+                                console.log("hi");
+                                if(modules[j].shouldAttach == key) {
+                                let params = rapier.JointParams.fixed({x:0,y:-50/SCALE},
+                                    0, {x:0,y:0},Math.PI/2);
+                                let joint = world.createJoint(params,
+                                    modules[i],modules[j]);
+                                modules[i].down.joint = joint;
+                                modules[i].down.exists = false;
                                 modules[j].base.hasModule = true;
                                 }
                             }
@@ -417,7 +427,7 @@ function gameLoop() {
                 }
                 for(let j = 0; j < modules.length; j++) {
                     if(moduleGrab[j].grabbed) {
-                        let verified = false;
+                        var verified = false;
                         if(modules[i].right.joint == null && i != j && modules[i].base.hasModule) {
                             let downVector = {x: 25 / SCALE, y: 0};
                             let mouseVector = {
@@ -502,13 +512,12 @@ function gameLoop() {
                                 verified = true;
                             }
                         }
-                        if(verified == false) {
+                        if(verified === false) {
                             modules[i].down.hasModule = false;
                             modules[i].right.hasModule = false;
                             modules[i].left.hasModule = false;
                             modules[j].shouldAttach = null;
                         }
-                        console.log(modules[i].left.hasModule);
                     }
                 }
             }
