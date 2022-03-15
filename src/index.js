@@ -245,70 +245,87 @@ function gameLoop() {
                 mouses[key].module = 0;
                 for(let i=0; i < modules.length; i++) {
                     if(moduleGrab[i].mouse == key) {
-                        modules[i].setDominanceGroup(0);
-                        modules[i].wakeUp();
-                        modules[i].setLinvel({x:0,y:0}, true);
-                        modules[i].setAngvel(0, true);
+						const ungrabbed_module = modules[i];
+                        ungrabbed_module.setDominanceGroup(0);
+                        ungrabbed_module.wakeUp();
+                        ungrabbed_module.setLinvel({x:0,y:0}, true);
+                        ungrabbed_module.setAngvel(0, true);
                         moduleGrab[i].grabbed = 0;
                         moduleGrab[i].mouse = 0;
                         if(players[key].down.hasModule) {
                             let params = rapier.JointParams.fixed({x:0,y:50/SCALE},
                                 0, {x:0,y:0},Math.PI);
                             let joint = world.createJoint(params,
-                                players[key],modules[i]);
+                                players[key],ungrabbed_module);
                             players[key].down.joint = joint;
                             players[key].down.exists = false;
-                            modules[i].base.hasModule = true;
+                            ungrabbed_module.base.hasModule = true;
                         }
                         if(players[key].up.hasModule) {
                             let params = rapier.JointParams.fixed({x:0,y:-50/SCALE},
                                 0, {x:0,y:0},0);
                             let joint = world.createJoint(params,
-                                players[key],modules[i]);
+                                players[key],ungrabbed_module);
                             players[key].up.joint = joint;
                             players[key].up.exists = false;
-                            modules[i].base.hasModule = true;
+                            ungrabbed_module.base.hasModule = true;
                         }
                         if(players[key].right.hasModule) {
                             let params = rapier.JointParams.fixed({x:50/SCALE,y:0},
                                 0, {x:0,y:0},-Math.PI/2);
                             let joint = world.createJoint(params,
-                                players[key],modules[i]);
+                                players[key],ungrabbed_module);
                             players[key].right.joint = joint;
                             players[key].right.exists = false;
-                            modules[i].base.hasModule = true;
+                            ungrabbed_module.base.hasModule = true;
                         }
                         if(players[key].left.hasModule) {
                             let params = rapier.JointParams.fixed({x:-50/SCALE,y:0},
                                 0, {x:0,y:0},Math.PI/2);
                             let joint = world.createJoint(params,
-                                players[key],modules[i]);
+                                players[key],ungrabbed_module);
                             players[key].left.joint = joint;
                             players[key].left.exists = false;
-                            modules[i].base.hasModule = true;
+                            ungrabbed_module.base.hasModule = true;
                         }
                         for(let j = 0; j < modules.length; j++) {
-                            if(modules[i].left.hasModule){
-                                if(modules[j].shouldAttach == key) {
-                                let params = rapier.JointParams.fixed({x:-50/SCALE,y:0},
-                                    0, {x:0,y:0},Math.PI/2);
-                                let joint = world.createJoint(params,
-                                    modules[i],modules[j]);
-                                modules[i].left.joint = joint;
-                                modules[i].left.exists = false;
-                                modules[j].base.hasModule = true;
+							const other_module = modules[j];
+							if (other_module === ungrabbed_module) continue;
+                            if(other_module.left.hasModule){
+								console.log(ungrabbed_module.shouldAttach);
+								console.log(key);
+                                if(ungrabbed_module.shouldAttach == key) {
+									let params = rapier.JointParams.fixed({x:51/SCALE,y:0},
+										0, {x:0,y:0},0);
+									let joint = world.createJoint(params,
+										ungrabbed_module,other_module);
+                                    other_module.setRotation(Math.PI / 2, true);
+									ungrabbed_module.left.joint = joint;
+									ungrabbed_module.left.exists = false;
+									other_module.base.hasModule = true;
                                 }
                             }
-                            if(modules[i].down.hasModule){
-                                console.log("hi");
-                                if(modules[j].shouldAttach == key) {
-                                let params = rapier.JointParams.fixed({x:0,y:-50/SCALE},
-                                    0, {x:0,y:0},Math.PI/2);
-                                let joint = world.createJoint(params,
-                                    modules[i],modules[j]);
-                                modules[i].down.joint = joint;
-                                modules[i].down.exists = false;
-                                modules[j].base.hasModule = true;
+                            if(other_module.right.hasModule){
+                                if(ungrabbed_module.shouldAttach == key) {
+									let params = rapier.JointParams.fixed({x:-51,y:0/SCALE},
+										0, {x:0,y:0},0);
+									let joint = world.createJoint(params,
+										ungrabbed_module,other_module);
+                                    other_module.setRotation(Math.PI / 2, true);
+									ungrabbed_module.right.joint = joint;
+									ungrabbed_module.right.exists = false;
+									other_module.base.hasModule = true;
+                                }
+                            }
+                            if(other_module.down.hasModule){
+                                if(ungrabbed_module.shouldAttach == key) {
+									let params = rapier.JointParams.fixed({x:0,y:51/SCALE},
+										0, {x:0,y:0},0);
+									let joint = world.createJoint(params,
+										ungrabbed_module,other_module);
+									ungrabbed_module.down.joint = joint;
+									ungrabbed_module.down.exists = false;
+									other_module.base.hasModule = true;
                                 }
                             }
                         }
@@ -320,7 +337,9 @@ function gameLoop() {
 
         for(let key of Object.keys(players)) {
             for(let i = 0; i < modules.length; i++) {
-                if(moduleGrab[i].grabbed == true) {
+				const grab_meta = moduleGrab[i];
+				const grabbed_module = modules[i];
+                if(grab_meta.grabbed == true) {
                     let verified = false;
                     if(players[key].down.joint == null) {
                         let downVector = {x: 0, y: 25 / SCALE};
@@ -337,8 +356,8 @@ function gameLoop() {
                                 x: position.x + players[key].translation().x,
                                 y: position.y + players[key].translation().y
                             };
-                            modules[i].setTranslation(position);
-                            modules[i].setRotation(players[key].rotation() + Math.PI);
+                            grabbed_module.setTranslation(position);
+                            grabbed_module.setRotation(players[key].rotation() + Math.PI);
                             players[key].down.hasModule = true;
                             players[key].right.hasModule = false;
                             players[key].up.hasModule = false;
@@ -361,8 +380,8 @@ function gameLoop() {
                                 x: position.x + players[key].translation().x,
                                 y: position.y + players[key].translation().y
                             };
-                            modules[i].setTranslation(position);
-                            modules[i].setRotation(players[key].rotation() + Math.PI / 2);
+                            grabbed_module.setTranslation(position);
+                            grabbed_module.setRotation(players[key].rotation() + Math.PI / 2);
                             players[key].down.hasModule = false;
                             players[key].right.hasModule = true;
                             players[key].up.hasModule = false;
@@ -385,8 +404,8 @@ function gameLoop() {
                                 x: position.x + players[key].translation().x,
                                 y: position.y + players[key].translation().y
                             };
-                            modules[i].setTranslation(position);
-                            modules[i].setRotation(players[key].rotation() - Math.PI / 2);
+                            grabbed_module.setTranslation(position);
+                            grabbed_module.setRotation(players[key].rotation() - Math.PI / 2);
                             players[key].down.hasModule = false;
                             players[key].right.hasModule = false;
                             players[key].up.hasModule = false;
@@ -409,8 +428,8 @@ function gameLoop() {
                                 x: position.x + players[key].translation().x,
                                 y: position.y + players[key].translation().y
                             };
-                            modules[i].setTranslation(position);
-                            modules[i].setRotation(players[key].rotation());
+                            grabbed_module.setTranslation(position);
+                            grabbed_module.setRotation(players[key].rotation());
                             players[key].down.hasModule = false;
                             players[key].right.hasModule = false;
                             players[key].up.hasModule = true;
@@ -422,104 +441,107 @@ function gameLoop() {
                         players[key].down.hasModule = false;
                         players[key].right.hasModule = false;
                         players[key].up.hasModule = false;
-                        players[key].left.hasModule = false;
+						 players[key].left.hasModule = false;
+						 for(let j = 0; j < modules.length; j++) {
+						const other_module = modules[j];
+								 if (other_module === grabbed_module) continue;
+						//if(moduleGrab[j].grabbed) {
+							if(other_module.right.joint == null)/*&& i != j && modules[i].base.hasModule)*/ {
+								let downVector = {x: 25 / SCALE, y: 0};
+								let mouseVector = {
+									x: mouses[key].translation().x - other_module.translation().x,
+									y: mouses[key].translation().y - other_module.translation().y,
+								};
+								mouseVector = rotateVector(mouseVector, -other_module.rotation());
+								let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
+								if(downDist < 2) {
+									let position = {x: 50 / SCALE, y: 0};
+									position = rotateVector(position, other_module.rotation());
+									position = {
+										x: position.x + other_module.translation().x,
+										y: position.y + other_module.translation().y
+									};
+									grabbed_module.setTranslation(position);
+									grabbed_module.setRotation(other_module.rotation() + Math.PI / 2);
+									other_module.right.hasModule = true;
+									if(other_module.down.exists) {
+										other_module.down.hasModule = false;
+									}
+									if(other_module.left.exists) {
+										other_module.left.hasModule = false;
+									}
+									console.log("ATTACH PLOZ: " + key);
+									grabbed_module.shouldAttach = key;
+									verified = true;
+								}
+							}
+							if(other_module.left.joint == null /*&& i != j && other_module.base.hasModule*/) {
+								let downVector = {x: -25 / SCALE, y: 0};
+								let mouseVector = {
+									x: mouses[key].translation().x - other_module.translation().x,
+									y: mouses[key].translation().y - other_module.translation().y,
+								};
+								mouseVector = rotateVector(mouseVector, -other_module.rotation());
+								let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
+								if(downDist < 2) {
+									let position = {x: -50 / SCALE, y: 0};
+									position = rotateVector(position, other_module.rotation());
+									position = {
+										x: position.x + other_module.translation().x,
+										y: position.y + other_module.translation().y
+									};
+									grabbed_module.setTranslation(position);
+									grabbed_module.setRotation(other_module.rotation() - Math.PI / 2);
+									if(other_module.right.exists) {
+										other_module.right.hasModule = false;
+									}
+									if(other_module.down.exists) {
+										other_module.down.hasModule = false;
+									}
+									other_module.left.hasModule = true;
+									grabbed_module.shouldAttach = key;
+									verified = true;
+								}
+							}
+							if(other_module.down.joint == null/* && i != j && modules[i].base.hasModule*/) {
+								let downVector = {x: 0, y: -25 / SCALE};
+								let mouseVector = {
+									x: mouses[key].translation().x - other_module.translation().x,
+									y: mouses[key].translation().y - other_module.translation().y,
+								};
+								mouseVector = rotateVector(mouseVector, -other_module.rotation());
+								let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
+								if(downDist < 2) {
+									let position = {x: 0, y: -50 / SCALE};
+									position = rotateVector(position, other_module.rotation());
+									position = {
+										x: position.x + other_module.translation().x,
+										y: position.y + other_module.translation().y
+									};
+									grabbed_module.setTranslation(position);
+									grabbed_module.setRotation(other_module.rotation());
+									if(other_module.right.exists) {
+										other_module.right.hasModule = false;
+									}
+									other_module.down.hasModule = true;
+									if(other_module.left.exists) {
+										other_module.left.hasModule = false;
+									}
+									grabbed_module.shouldAttach = key;
+									verified = true;
+								}
+							}
+							if(verified === false) {
+								other_module.down.hasModule = false;
+								other_module.right.hasModule = false;
+								other_module.left.hasModule = false;
+								grabbed_module.shouldAttach = 0;
+							}
+						//}
+                } 
                     }
                 }
-                for(let j = 0; j < modules.length; j++) {
-                    if(moduleGrab[j].grabbed) {
-                        var verified = false;
-                        if(modules[i].right.joint == null && i != j && modules[i].base.hasModule) {
-                            let downVector = {x: 25 / SCALE, y: 0};
-                            let mouseVector = {
-                                x: mouses[key].translation().x - modules[i].translation().x,
-                                y: mouses[key].translation().y - modules[i].translation().y,
-                            };
-                            mouseVector = rotateVector(mouseVector, -modules[i].rotation());
-                            let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
-                            if(downDist < 2) {
-                                let position = {x: 50 / SCALE, y: 0};
-                                position = rotateVector(position, modules[i].rotation());
-                                position = {
-                                    x: position.x + modules[i].translation().x,
-                                    y: position.y + modules[i].translation().y
-                                };
-                                modules[j].setTranslation(position);
-                                modules[j].setRotation(modules[i].rotation() + Math.PI / 2);
-                                modules[i].right.hasModule = true;
-                                if(modules[i].down.exists) {
-                                    modules[i].down.hasModule = false;
-                                }
-                                if(modules[i].left.exists) {
-                                    modules[i].left.hasModule = false;
-                                }
-                                modules[j].shouldAttach = key;
-                                verified = true;
-                            }
-                        }
-                        if(modules[i].left.joint == null && i != j && modules[i].base.hasModule) {
-                            let downVector = {x: -25 / SCALE, y: 0};
-                            let mouseVector = {
-                                x: mouses[key].translation().x - modules[i].translation().x,
-                                y: mouses[key].translation().y - modules[i].translation().y,
-                            };
-                            mouseVector = rotateVector(mouseVector, -modules[i].rotation());
-                            let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
-                            if(downDist < 2) {
-                                let position = {x: -50 / SCALE, y: 0};
-                                position = rotateVector(position, modules[i].rotation());
-                                position = {
-                                    x: position.x + modules[i].translation().x,
-                                    y: position.y + modules[i].translation().y
-                                };
-                                modules[j].setTranslation(position);
-                                modules[j].setRotation(modules[i].rotation() - Math.PI / 2);
-                                if(modules[i].right.exists) {
-                                    modules[i].right.hasModule = false;
-                                }
-                                if(modules[i].down.exists) {
-                                    modules[i].down.hasModule = false;
-                                }
-                                modules[i].left.hasModule = true;
-                                modules[j].shouldAttach = key;
-                                verified = true;
-                            }
-                        }
-                        if(modules[i].down.joint == null && i != j && modules[i].base.hasModule) {
-                            let downVector = {x: 0, y: -25 / SCALE};
-                            let mouseVector = {
-                                x: mouses[key].translation().x - modules[i].translation().x,
-                                y: mouses[key].translation().y - modules[i].translation().y,
-                            };
-                            mouseVector = rotateVector(mouseVector, -modules[i].rotation());
-                            let downDist = Math.abs(mouseVector.x-downVector.x)+Math.abs(mouseVector.y-downVector.y);
-                            if(downDist < 2) {
-                                let position = {x: 0, y: -50 / SCALE};
-                                position = rotateVector(position, modules[i].rotation());
-                                position = {
-                                    x: position.x + modules[i].translation().x,
-                                    y: position.y + modules[i].translation().y
-                                };
-                                modules[j].setTranslation(position);
-                                modules[j].setRotation(modules[i].rotation());
-                                if(modules[i].right.exists) {
-                                    modules[i].right.hasModule = false;
-                                }
-                                modules[i].down.hasModule = true;
-                                if(modules[i].left.exists) {
-                                    modules[i].left.hasModule = false;
-                                }
-                                modules[j].shouldAttach = key;
-                                verified = true;
-                            }
-                        }
-                        if(verified === false) {
-                            modules[i].down.hasModule = false;
-                            modules[i].right.hasModule = false;
-                            modules[i].left.hasModule = false;
-                            modules[j].shouldAttach = null;
-                        }
-                    }
-                }
+                
             }
         }
 
