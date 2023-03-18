@@ -1,0 +1,10 @@
+/home/ghostlyzsh/dev/rust/starkingdoms-server/server/target/debug/deps/libprotocol_derive-230b6e21fff52d7d.so: /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/lib.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/attr.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/codegen/mod.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/codegen/enums.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/format.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/plan.rs
+
+/home/ghostlyzsh/dev/rust/starkingdoms-server/server/target/debug/deps/protocol_derive-230b6e21fff52d7d.d: /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/lib.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/attr.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/codegen/mod.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/codegen/enums.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/format.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/plan.rs
+
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/lib.rs:
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/attr.rs:
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/codegen/mod.rs:
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/codegen/enums.rs:
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/format.rs:
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/protocol-derive-3.4.0/src/plan.rs:

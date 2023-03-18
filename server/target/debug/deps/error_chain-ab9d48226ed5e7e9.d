@@ -1,0 +1,10 @@
+/home/ghostlyzsh/dev/rust/starkingdoms-server/server/target/debug/deps/error_chain-ab9d48226ed5e7e9.rmeta: /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/lib.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/impl_error_chain_kind.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/error_chain.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/quick_main.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/backtrace.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/example_generated.rs
+
+/home/ghostlyzsh/dev/rust/starkingdoms-server/server/target/debug/deps/error_chain-ab9d48226ed5e7e9.d: /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/lib.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/impl_error_chain_kind.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/error_chain.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/quick_main.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/backtrace.rs /home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/example_generated.rs
+
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/lib.rs:
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/impl_error_chain_kind.rs:
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/error_chain.rs:
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/quick_main.rs:
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/backtrace.rs:
+/home/ghostlyzsh/.cargo/registry/src/github.com-1ecc6299db9ec823/error-chain-0.12.4/src/example_generated.rs:

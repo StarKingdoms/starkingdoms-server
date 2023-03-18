@@ -1,0 +1,1 @@
+/home/ghostlyzsh/dev/rust/starkingdoms-server/stk_protocol/target/debug/libstk_protocol.rlib: /home/ghostlyzsh/dev/rust/starkingdoms-server/stk_protocol/src/lib.rs /home/ghostlyzsh/dev/rust/starkingdoms-server/stk_protocol/src/protocol.rs
