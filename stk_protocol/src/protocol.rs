@@ -5,11 +5,17 @@ pub enum ServerboundMsg {
     Handshake {
         username: String,
     },
+    Chat {
+        id: u16,
+        message: String,
+    },
 }
 
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub enum ClientboundMsg {
-    Handshake,
+    Handshake {
+        id: u16
+    },
     Chat {
         id: u16,
         message: String,

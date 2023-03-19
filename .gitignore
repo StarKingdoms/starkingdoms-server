@@ -3,4 +3,6 @@ node_modules/
 
 # Added by cargo
 
-/target
+/stk_protocol/target
+/server/target
+/client/target
